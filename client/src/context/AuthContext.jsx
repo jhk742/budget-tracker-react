@@ -13,6 +13,11 @@ export const AuthContextProvider = ({ children }) => {
         password: ""
     })
 
+    useEffect(() => {
+        const user = localStorage.getItem("User")
+        setUser(JSON.parse(user))
+    }, [])
+
     //for whenever the user provides input in one of the fields within the register-user form
     const updateRegisterInfo = useCallback((info) => {
         setRegisterInfo(info)
@@ -20,16 +25,28 @@ export const AuthContextProvider = ({ children }) => {
 
     const registerUser = useCallback(async (e) => {
         e.preventDefault()
-        console.log("HOWDY")
-    })
+        setIsRegisterLoading(true)
+        setRegisterError(null)
+        const res = await postRequest(`${baseUrl}/users/register`, JSON.stringify(registerInfo))
+        setIsRegisterLoading(false)
+
+        if (res.error) {
+            return setRegisterError(res)
+        }
+
+        localStorage.setItem("User", JSON.stringify(res))
+        setUser(res)
+    }, [registerInfo])
 
     return (
         <AuthContext.Provider 
             value={{
+                user,
                 updateRegisterInfo,
                 registerUser,
                 registerError,
-                isRegisterLoading
+                isRegisterLoading,
+                setRegisterError
             }}
         >
             {children}

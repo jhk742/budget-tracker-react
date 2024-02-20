@@ -6,7 +6,8 @@ export default function Register() {
     const { updateRegisterInfo,
             registerUser,
             registerError,
-            isRegisterLoading } = useContext(AuthContext)
+            isRegisterLoading, 
+            setRegisterError } = useContext(AuthContext)
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -50,10 +51,15 @@ export default function Register() {
                     <button 
                         type="submit" 
                         className="btn-register-submit"
-                        
                     >
-                            REGISTER
+                            {isRegisterLoading ? "Creating your account" : "Register"}
                     </button>
+                    {registerError?.error && (
+                        <span className="register-error">
+                            Warning: {registerError.message}
+                            <button onClick={() => setRegisterError(null)}>X</button>
+                        </span>
+                    )}
                 </form>
             </div>
         </div>
