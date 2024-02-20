@@ -12,14 +12,14 @@ body {
 /*
 REGISTER USER
 */
-.Register {
+.Register, .Login {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.register-box {
+.register-box, .login-box {
     background-color: #808080;
     width: 60%;
     height: 40%;
@@ -29,7 +29,7 @@ REGISTER USER
     align-items: center;
 }
 
-.register-form {
+.register-form, .login-form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,14 +37,14 @@ REGISTER USER
     margin-bottom: 1rem;
 }
 
-.register-form-title {
+.register-form-title, .login-form-title {
     margin-top: 1rem;
     text-align: center;
     font-size: 2rem;
     color: #fff;
 }
 
-.register-form label {
+.register-form label, .login-form label {
     user-select: none;
     display: flex;
     flex-direction: column;
@@ -53,7 +53,7 @@ REGISTER USER
     color: #fff;
 }
 
-.register-form input {
+.register-form input, .login-form input {
     border-radius: 3px;
     border: none;
     height: 3vh;
@@ -61,7 +61,7 @@ REGISTER USER
     outline: none;
 }
 
-.btn-register-submit {
+.btn-register-submit, .btn-login-submit {
     width: 80%;
     height: 2rem;
     border-radius: 3px;
@@ -75,12 +75,12 @@ REGISTER USER
     margin-bottom: 1rem;
 }
 
-.btn-register-submit:hover {
+.btn-register-submit:hover, .btn-login-submit:hover {
     background: #fff;
     color: #000;
 }
 
-.register-error {
+.register-error, .login-error {
     border-radius: 3px;
     background: #ffff99;
     width: 80%;
@@ -91,7 +91,7 @@ REGISTER USER
     align-items: center;
 }
 
-.register-error button {
+.register-error button, .login-error button {
     border: 1px solid #000;
     padding: 2px;
     background: #ccc966;
@@ -100,3 +100,8 @@ REGISTER USER
     cursor: pointer;
     margin-left: 5px;
 }
+
+/*
+LOGIN USER
+*/
+
