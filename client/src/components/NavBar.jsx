@@ -1,14 +1,43 @@
 import { useContext } from "react";
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { AuthContext } from "../context/AuthContext";
 
 export default function NavBar() {
 
-    const { user } = useContext(AuthContext)
+    const { user, logoutUser } = useContext(AuthContext)
+    const location = useLocation()
 
     return (
-        <div>
-            NAVBAR
+        <div className="Navbar">
+            <span className="nav-app-name">Budget Tracker</span>
+            {user && <span className="nav-logged-user">Logged in as {user.name}</span>}
+            {user ? (
+                <div className="navbar-items">
+                    <Link
+                        to="/login"
+                        onClick={logoutUser}
+                        className="nav-link"
+                    >
+                        Logout
+                    </Link>
+                </div>
+                ) : (
+                    <div className="navbar-items">
+                        {location.pathname === "/register" && <Link
+                            to="/login"
+                            className="nav-link"
+                        >
+                            Login
+                        </Link>}
+                        {location.pathname === "/login" && <Link
+                            to="/register"
+                            className="nav-link"
+                        >
+                            Register
+                        </Link>}
+                    </div>
+                )
+            }
         </div>
     )
 }

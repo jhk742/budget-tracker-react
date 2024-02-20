@@ -102,6 +102,35 @@ REGISTER USER
 }
 
 /*
-LOGIN USER
+NAVBAR
 */
+.Navbar {
+    background: #808080;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.navbar-items {
+    margin: 20px 20px;
+    background: #000;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nav-app-name {
+    margin: 20px 20px;
+    color: #fff;
+    font-size: 2rem;
+}
+
+.nav-logged-user {
+    color: #fff;
+}
+
+.nav-link {
+    user-select: none;
+    text-decoration: none;
+    color: #fff;
+}
