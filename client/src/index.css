@@ -1,0 +1,80 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #000;
+    font-family: 'Nunito', sans-serif;
+}
+
+/*
+REGISTER USER
+*/
+.Register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.register-box {
+    background-color: #808080;
+    width: 60%;
+    height: 40%;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.register-form-title {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 2rem;
+    color: #fff;
+}
+
+.register-form label {
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 80%;
+    color: #fff;
+}
+
+.register-form input {
+    border-radius: 3px;
+    border: none;
+    height: 3vh;
+    text-indent: .5rem;
+    outline: none;
+}
+
+.btn-register-submit {
+    width: 80%;
+    height: 2rem;
+    border-radius: 3px;
+    border: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    background: #000;
+    color: #fff;
+}
+
+.btn-register-submit:hover {
+    background: #fff;
+    color: #000;
+}
