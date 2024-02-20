@@ -12,7 +12,20 @@ export default function NavBar() {
             <span className="nav-app-name">Budget Tracker</span>
             {user && <span className="nav-logged-user">Logged in as {user.name}</span>}
             {user ? (
-                <div className="navbar-items">
+                <div>
+                    {
+                        (
+                            location.pathname === "/category-management" ||
+                            location.pathname === "/transaction-management" ||
+                            location.pathname === "/account-balance"
+                        ) &&
+                        <Link 
+                            to="/"
+                            className="nav-link"
+                        >
+                            Home
+                        </Link>
+                    }
                     <Link
                         to="/login"
                         onClick={logoutUser}

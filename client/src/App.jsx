@@ -6,6 +6,10 @@ import Login from './pages/Login'
 import NavBar from './components/NavBar'
 import Home from './pages/Home'
 
+import AccountBalance from './pages/AccountBalance'
+import CategoryManagement from './pages/CategoryManagement'
+import TransactionManagement from './pages/TransactionMangement'
+
 
 export default function App() {
 
@@ -19,6 +23,9 @@ export default function App() {
           <Route path="/" element={user ? <Home /> : <Login />} />
           <Route path="/register" element={user ? <Home /> : <Register />} />
           <Route path="/login" element={user ? <Home /> : <Login />} />
+          <Route path="/category-management" element={user ? <CategoryManagement /> : <Login />}/>
+          <Route path="/transaction-management" element={user ? <TransactionManagement /> : <Login />}/>
+          <Route path="account-balance" element={user ? <AccountBalance /> : <Login />}/>
         </Routes>
       </>
     </>
