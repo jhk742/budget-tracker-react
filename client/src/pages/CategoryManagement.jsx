@@ -72,7 +72,7 @@ export default function CategoryManagement() {
                 return setAddingCategoryError(res)
             }
 
-            //inform the user another way (alert / message box)
+            ////create a state to show on successful operation
             console.log("Successfully added category", res)
 
             //optimistic ui
@@ -97,10 +97,12 @@ export default function CategoryManagement() {
         setUpdatingCategoryError(null)
         try {
             const res = await patchRequest(`${baseUrl}/categories/updateCategory`, JSON.stringify(categoryData))
-            
-            // const updatedIndex = categories.findIndex(cat => cat._id === res._id);
 
-            //inform the user another way (alert / message box) - temporary
+            if (res.error) {
+                return setUpdatingCategoryError(res)
+            }
+
+            ////create a state to show on successful operation
             console.log("Category updated successfully", res)
 
             //optimistic ui - update existing category with the new data
@@ -126,7 +128,7 @@ export default function CategoryManagement() {
             setSelectedRow(null)
         } catch (error) {
             console.error("Error updating category: ", error)
-            setAddingCategoryError(error.message)
+            setUpdatingCategoryError(error.message)
         } finally {
             setIsUpdateLoading(false)
         }
@@ -139,6 +141,10 @@ export default function CategoryManagement() {
         try {
             const res = await deleteRequest(`${baseUrl}/categories/deleteCategory/${categoryData._id}/${categoryData.name}`)
             
+            if (res.error)
+                return setDeletingCategoryError(res)
+
+                //create a state to show on successful operation
             console.log("Category deleted successfully.", res)
 
             //update existing category by omitting the one that's been deleted
@@ -169,6 +175,11 @@ export default function CategoryManagement() {
 
         //if the row is already selected, 
         setSelectedRow(prev => prev === _id ? null : _id)
+
+        //set errors to null to hide warning message
+        setAddingCategoryError(null)
+        setUpdatingCategoryError(null)
+        setDeletingCategoryError(null)
     }
 
 
@@ -252,10 +263,31 @@ export default function CategoryManagement() {
                         <button
                             disabled={!selectedRow}
                             onClick={handleDelete}
-                            className="btn-delete-cateogry"
+                            className="btn-delete-category"
                         >
                             {isDeleteLoading ? "Delete Category" : "Delete Category"}
                         </button>
+                        
+                        {
+                            ((addingCategoryError || updatingCategoryError || deletingCategoryError) && selectedRow) &&
+                            (<div className="error-alert-category">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                                    <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
+                                    <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                                </svg>
+                                {addingCategoryError && <span>{addingCategoryError?.message}</span>}
+                                {updatingCategoryError && <span>{updatingCategoryError?.message}</span>}
+                                {deletingCategoryError && <span>{deletingCategoryError?.message}</span>}
+                                <button 
+                                    className="btn-close-warning"
+                                    onClick={() => {
+                                        setAddingCategoryError(null)
+                                        setUpdatingCategoryError(null)
+                                        setDeletingCategoryError(null)
+                                    }}
+                                >X</button>
+                            </div>)
+                        }
                     </div>
                 </div>
             </div>

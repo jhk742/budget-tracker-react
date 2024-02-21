@@ -237,7 +237,7 @@ td {
     text-indent: 5px;
 }
 
-.categories-form button {
+.categories-form button, .btn-delete-category {
     background: #fff;
     border: none;
     height: 3rem;
@@ -249,11 +249,15 @@ td {
     margin-bottom: 1rem;
 }
 
-.categories-form button:hover {
+.categories-form button:hover, .btn-delete-category:hover {
     background: #000;
     color: #fff;
     border: 1px solid #fff;
     transform: scale(1.03)
+}
+
+.btn-delete-category {
+    width: 100%;
 }
 
 .category-table-row {
@@ -285,6 +289,36 @@ td {
     }
 }
 
-.btn-delete-category {
+.error-alert-category {
+    background: orange;
+    height: 10vh;
+    border-radius: 3px;
+    color: #FF0000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-weight: bold;
+}
+
+.bi-exclamation-triangle {
+    width: 3rem;
+    height: 3rem;
+    position: absolute;
+    top: 20%;
+    left: 5%;
+}
+
+.btn-close-warning {
+    background: orange;
+    border: 1px solid #FF0000;
+    color: #FF0000;
+    position: absolute;
+    top: 5%;
+    right: 2%;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1px;
 }

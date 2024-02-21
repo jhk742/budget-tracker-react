@@ -36,6 +36,9 @@ const updateCategory = async (req, res) => {
 
         if (!category) 
             return res.status(404).json({ message: `Category: ${name} not found` })
+
+        if (!name || !description)
+            return res.status(400).json("All fields are required")
     
         //if found, update the name and desc
         category.name = name
