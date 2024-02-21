@@ -167,3 +167,54 @@ HOME
     background: #000;
     border: 1px solid #fff;
 }
+
+/*
+Categories
+*/
+.CategoryManagement {
+    color: #fff;
+}
+
+.categories-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.categories-services-container {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #fff;
+    height: 85vh;
+    width: 80vw;
+}
+
+.categories-table {
+    margin: 1rem 0px 0px 1rem;
+    overflow: auto;
+    width: 50%;
+    height: 100%;
+}
+
+.categories-functions {
+    margin: 1rem 1rem 0px 0px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th {
+    background-color: #808080;
+}
+
+td {
+    font-size: 0.9rem;
+}

@@ -18,3 +18,21 @@ export const postRequest = async (url, body) => {
 
     return data
 }
+
+export const getRequest = async (url, body) => {
+    const res = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        let message = data?.message ? data.message : data
+        return {error: true, message}
+    }
+
+    return data
+}

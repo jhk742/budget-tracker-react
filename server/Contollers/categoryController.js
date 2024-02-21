@@ -19,4 +19,14 @@ const addCategoryItem = async (req, res) => {
     }
 }
 
-module.exports = { addCategoryItem }
+const retrieveCategories = async (req, res) => {
+    try {
+        const categories = await categoryModel.find()
+        res.status(200).json(categories)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: "Server Error. Could not retrieve categories." })
+    }
+}
+
+module.exports = { addCategoryItem, retrieveCategories }
