@@ -196,10 +196,6 @@ Categories
     height: 100%;
 }
 
-.categories-functions {
-    margin: 1rem 1rem 0px 0px;
-}
-
 table {
     border-collapse: collapse;
     width: 100%;
@@ -217,4 +213,45 @@ th {
 
 td {
     font-size: 0.9rem;
+}
+
+.categories-functions {
+    margin: 1rem 1rem 0px 0px;
+    padding: 1rem;
+    border: 1px solid #fff;
+    width: 50%;
+}
+
+.categories-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.categories-form-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.categories-form-input input {
+    outline: none;
+    text-indent: 5px;
+}
+
+.categories-form button {
+    background: #fff;
+    border: none;
+    height: 3rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 3px;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.categories-form button:hover {
+    background: #000;
+    color: #fff;
+    border: 1px solid #fff;
+    transform: scale(1.03)
 }
