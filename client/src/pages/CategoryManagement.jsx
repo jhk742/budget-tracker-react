@@ -25,6 +25,32 @@ export default function CategoryManagement() {
         }
         fetchCategories()
     }, [])
+    
+    useEffect(() => {
+        // Clear input fields if no row is selected
+        if (!selectedRow) {
+            setCategoryData({
+                _id: "",
+                name: "",
+                description: ""
+            });
+        }
+    }, [selectedRow]);
+    
+    useEffect(() => {
+        // Set category data when a row is selected
+        if (selectedRow) {
+            const category = categories.find(category => category._id === selectedRow);
+            if (category) {
+                const { _id, name, description } = category;
+                setCategoryData({
+                    _id,
+                    name,
+                    description
+                });
+            }
+        }
+    }, [selectedRow, categories]);
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -125,7 +151,7 @@ export default function CategoryManagement() {
                 name: "",
                 description: ""
             })
-            
+
             setSelectedRow(null)
         } catch (error) {
             console.log(error)
@@ -139,18 +165,12 @@ export default function CategoryManagement() {
     //thus, react will re-render the comp to reflect the updated state including the
     //categoriesList jsx expression
     const handleRowClick = (e, category) => {
-        const { _id, name, description } = category
+        const { _id } = category
 
         //if the row is already selected, 
         setSelectedRow(prev => prev === _id ? null : _id)
-
-        //setCategoryData (so as to bring in the information to the input fields)
-        setCategoryData({
-            _id,
-            name,
-            description
-        })
     }
+
 
     const categoriesList = categories.map((category, index) => {
         const { _id, name, description } = category
