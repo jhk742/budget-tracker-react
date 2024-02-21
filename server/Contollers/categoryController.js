@@ -35,7 +35,7 @@ const updateCategory = async (req, res) => {
         const category = await categoryModel.findById(_id)
 
         if (!category) 
-            return res.status(404).json({ message: `Category: ${name} not found`})
+            return res.status(404).json({ message: `Category: ${name} not found` })
     
         //if found, update the name and desc
         category.name = name
@@ -56,8 +56,27 @@ const updateCategory = async (req, res) => {
     }
 }
 
+const deleteCategory = async (req, res) => {
+    const { _id, name } = req.params
+    try {
+        const category = await categoryModel.findByIdAndDelete(_id)
+
+        if (!category)
+            return res.status(404).json({ message: `Category: ${name} not found` })
+    
+        res.status(200).json({ 
+            message: "Category successfully deleted",
+            _id 
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error)
+    }
+}
+
 module.exports = { 
     addCategoryItem, 
     retrieveCategories,
-    updateCategory
+    updateCategory,
+    deleteCategory
 }

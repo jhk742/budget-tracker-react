@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from 'react'
-import { baseUrl, postRequest, getRequest, patchRequest } from '../utils/services'
+import { baseUrl, postRequest, getRequest, patchRequest, deleteRequest } from '../utils/services'
 
 
 export default function CategoryManagement() {
@@ -10,6 +10,8 @@ export default function CategoryManagement() {
     const [addingCategoryError, setAddingCategoryError] = useState(null)
     const [isUpdateLoading, setIsUpdateLoading] = useState(false)
     const [updatingCategoryError, setUpdatingCategoryError] = useState(null)
+    const [isDeleteLoading, setIsDeleteLoading] = useState(false)
+    const [deletingCategoryError, setDeletingCategoryError] = useState(null)
     const [categoryData, setCategoryData] = useState({
         _id: "",
         name: "",
@@ -101,6 +103,35 @@ export default function CategoryManagement() {
             setAddingCategoryError(error.message)
         } finally {
             setIsUpdateLoading(false)
+        }
+    }
+
+    const handleDelete = async (e) => {
+        e.preventDefault()
+        setIsDeleteLoading(true)
+        setDeletingCategoryError(null)
+        try {
+            const res = await deleteRequest(`${baseUrl}/categories/deleteCategory/${categoryData._id}/${categoryData.name}`)
+            
+            console.log("Category deleted successfully.", res)
+
+            //update existing category by omitting the one that's been deleted
+            const updatedCategories = categories.filter((category) => category._id !== res._id)
+            setCategories(updatedCategories)
+
+            //clear input fields
+            setCategoryData({
+                _id: "",
+                name: "",
+                description: ""
+            })
+            
+            setSelectedRow(null)
+        } catch (error) {
+            console.log(error)
+            setDeletingCategoryError(error.message)
+        } finally {
+            setIsDeleteLoading(false)
         }
     }
 
@@ -198,6 +229,13 @@ export default function CategoryManagement() {
                                 {isUpdateLoading ? "Updating Category" : "Update Category"}
                             </button>
                         </form>
+                        <button
+                            disabled={!selectedRow}
+                            onClick={handleDelete}
+                            className="btn-delete-cateogry"
+                        >
+                            {isDeleteLoading ? "Delete Category" : "Delete Category"}
+                        </button>
                     </div>
                 </div>
             </div>

@@ -246,6 +246,7 @@ td {
     font-weight: bold;
     border-radius: 3px;
     transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 1rem;
 }
 
 .categories-form button:hover {
@@ -282,4 +283,8 @@ td {
     100% {
         transform: scale(1);
     }
+}
+
+.btn-delete-category {
+    cursor: pointer;
 }

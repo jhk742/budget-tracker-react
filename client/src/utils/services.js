@@ -55,3 +55,21 @@ export const patchRequest = async (url, body) => {
     
     return data
 }
+
+export const deleteRequest = async (url) => {
+    const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        let message = data?.message ? data.message : data
+        return { error: true, message }
+    }
+
+    return data
+}
