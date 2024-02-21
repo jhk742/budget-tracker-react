@@ -1,21 +1,20 @@
 import { useCallback, useState, useEffect } from 'react'
-import { baseUrl, postRequest, getRequest } from '../utils/services'
+import { baseUrl, postRequest, getRequest, patchRequest } from '../utils/services'
 
 
 export default function CategoryManagement() {
 
     const [categories, setCategories] = useState([])
+    const [selectedRow, setSelectedRow] = useState(null)
     const [isAddingLoading, setIsAddingLoading] = useState(false)
     const [addingCategoryError, setAddingCategoryError] = useState(null)
+    const [isUpdateLoading, setIsUpdateLoading] = useState(false)
+    const [updatingCategoryError, setUpdatingCategoryError] = useState(null)
     const [categoryData, setCategoryData] = useState({
         _id: "",
         name: "",
         description: ""
     })
-
-    const [selectedRow, setSelectedRow] = useState(null)
-
-    console.log(categoryData._id, categoryData.name, categoryData.description)
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -41,11 +40,14 @@ export default function CategoryManagement() {
         try {
             const res = await postRequest(`${baseUrl}/categories/addItem`, JSON.stringify(categoryData))
             
-            console.log(res)
-            
             if (res.error) {
                 return setAddingCategoryError(res)
             }
+
+            //inform the user another way (alert / message box)
+            console.log("Successfully added category", res)
+
+            //optimistic ui
             setCategories(prev => [...prev, res])
             //to clear the input fields
             setCategoryData({
@@ -63,6 +65,43 @@ export default function CategoryManagement() {
 
     const handleUpdate = async (e) => {
         e.preventDefault()
+        setIsUpdateLoading(true)
+        setUpdatingCategoryError(null)
+        try {
+            const res = await patchRequest(`${baseUrl}/categories/updateCategory`, JSON.stringify(categoryData))
+            
+            // const updatedIndex = categories.findIndex(cat => cat._id === res._id);
+
+            //inform the user another way (alert / message box) - temporary
+            console.log("Category updated successfully", res)
+
+            //optimistic ui - update existing category with the new data
+            const updatedCategories = categories.map((category) => {
+                if (res._id === category._id) {
+                    return ({
+                        ...category,
+                        name: res.name,
+                        description: res.description
+                    })
+                } else {
+                    return category
+                }
+            })
+            setCategories(updatedCategories)
+
+            //clear input fields
+            setCategoryData({
+                _id: "",
+                name: "",
+                description: ""
+            })
+            setSelectedRow(null)
+        } catch (error) {
+            console.error("Error updating category: ", error)
+            setAddingCategoryError(error.message)
+        } finally {
+            setIsUpdateLoading(false)
+        }
     }
 
     //this function changes state, causing a change in the rendering of the component
@@ -154,8 +193,9 @@ export default function CategoryManagement() {
                             </button>
                             <button
                                 disabled={!selectedRow}
+                                onClick={handleUpdate}
                             >
-                                Update Category
+                                {isUpdateLoading ? "Updating Category" : "Update Category"}
                             </button>
                         </form>
                     </div>

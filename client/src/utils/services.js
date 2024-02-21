@@ -19,7 +19,7 @@ export const postRequest = async (url, body) => {
     return data
 }
 
-export const getRequest = async (url, body) => {
+export const getRequest = async (url) => {
     const res = await fetch(url, {
         method: "GET",
         headers: {
@@ -34,5 +34,24 @@ export const getRequest = async (url, body) => {
         return {error: true, message}
     }
 
+    return data
+}
+
+export const patchRequest = async (url, body) => {
+    const res = await fetch(url, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        let message = data?.message ? data.message : data
+        return { error: true, message }
+    }
+    
     return data
 }

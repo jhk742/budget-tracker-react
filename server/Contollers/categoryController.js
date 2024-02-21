@@ -1,8 +1,8 @@
 const categoryModel = require("../Models/categoryModel")
 
 const addCategoryItem = async (req, res) => {
+    const { name, description } = req.body
     try {
-        const { name, description } = req.body
         let item = await categoryModel.findOne({ name })
         if (item) 
             return res.status(400).json("Category with the given name already exists")
@@ -29,4 +29,35 @@ const retrieveCategories = async (req, res) => {
     }
 }
 
-module.exports = { addCategoryItem, retrieveCategories }
+const updateCategory = async (req, res) => {
+    const { _id, name, description } = req.body
+    try {
+        const category = await categoryModel.findById(_id)
+
+        if (!category) 
+            return res.status(404).json({ message: `Category: ${name} not found`})
+    
+        //if found, update the name and desc
+        category.name = name
+        category.description = description
+
+        //and save
+        await category.save()
+
+        res.status(200).json({
+            message: `Category ${name} updated successfully`,
+            _id,
+            name,
+            description
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error)
+    }
+}
+
+module.exports = { 
+    addCategoryItem, 
+    retrieveCategories,
+    updateCategory
+}
