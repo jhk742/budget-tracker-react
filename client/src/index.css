@@ -218,7 +218,6 @@ td {
 .categories-functions {
     margin: 1rem 1rem 0px 0px;
     padding: 1rem;
-    border: 1px solid #fff;
     width: 50%;
 }
 
@@ -254,4 +253,33 @@ td {
     color: #fff;
     border: 1px solid #fff;
     transform: scale(1.03)
+}
+
+.category-table-row {
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.category-table-row:hover {
+    background: #fff;
+    color: #000;
+    transform: scale(1.025)
+}
+
+.clicked-row {
+    background: #fff;
+    color: #000;
+    animation: enlargeAndShrink 0.1s linear;
+}
+
+@keyframes enlargeAndShrink {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.035);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
