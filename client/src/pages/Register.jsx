@@ -52,7 +52,7 @@ export default function Register() {
                         Initial Balance:
                         <input
                             type="number"
-                            name="initialBalance"
+                            name="balance"
                             onChange={handleChange}
                             step="0.01"
                         ></input>

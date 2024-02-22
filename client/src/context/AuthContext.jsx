@@ -1,5 +1,5 @@
 import { createContext, useCallback, useState, useEffect } from 'react'
-import { baseUrl, postRequest } from '../utils/services'
+import { baseUrl, postRequest, patchRequest } from '../utils/services'
 
 export const AuthContext = createContext() 
 
@@ -11,7 +11,7 @@ export const AuthContextProvider = ({ children }) => {
         name: "",
         email: "",
         password: "",
-        initialBalance: ""
+        balance: ""
     })
 
     const [loginError, setLoginError] = useState(null)
@@ -73,6 +73,28 @@ export const AuthContextProvider = ({ children }) => {
         })
     })
 
+    const updateUserBalance = useCallback(async (updatedBalance) => {
+        try {
+            const updatedUserData = { ...user, balance: updatedBalance }
+            const updateUserRes = await patchRequest(`${baseUrl}/users/updateUserBalance/${user._id}`, JSON.stringify({ balance: updatedBalance }));
+    
+            // Check if the update was successful
+            if (!updateUserRes.error) {
+                // Update user state
+                setUser(updatedUserData);
+                
+                // Update localStorage
+                localStorage.setItem("User", JSON.stringify(updatedUserData))
+            } else {
+                console.error("Error updating user balance", updateUserRes.message);
+                // Handle error if needed
+            }
+        } catch (error) {
+            console.error("Error updating user balance", error);
+            // Handle error if needed
+        }
+    }, [user])
+
     return (
         <AuthContext.Provider 
             value={{
@@ -87,7 +109,8 @@ export const AuthContextProvider = ({ children }) => {
                 isRegisterLoading,
                 isLoginLoading,
                 setRegisterError,
-                setLoginError
+                setLoginError,
+                updateUserBalance
             }}
         >
             {children}

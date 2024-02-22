@@ -5,9 +5,11 @@ import { AuthContext } from '../context/AuthContext'
 
 export default function TransactionManagement() {
 
-    const { user } = useContext(AuthContext)
+    const { user, updateUserBalance } = useContext(AuthContext)
 
     const [categories, setCategories] = useState([])
+
+    // console.log(user)
 
     const [isCreatingTransactionLoading, setIsCreatingTransactionLoading] = useState(false)
     const [transactionError, setTransactionError] = useState(null)
@@ -45,10 +47,18 @@ export default function TransactionManagement() {
         setIsCreatingTransactionLoading(true)
         setTransactionError(null)
         try {
+
+            if (transactionData.type === "Expense" && (user.balance - transactionData.amount < 0)) {
+                return setTransactionError({ message: "The amount you've entered exceeds your current balance." })
+            }
+
             const res = await postRequest(`${baseUrl}/transactions/addTransaction`, JSON.stringify(transactionData))
             if (res.error) {
                 return setTransactionError(res)
             }
+
+            // // Update user's balance in the database
+            updateUserBalance(transactionData.type === "Income" ? Number(user.balance) + Number(transactionData.amount) : user.balance - transactionData.amount)
 
             setTransactionSuccess("Transaction created successfully!")
 
