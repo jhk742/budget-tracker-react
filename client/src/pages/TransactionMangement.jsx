@@ -8,6 +8,9 @@ export default function TransactionManagement() {
     const { user } = useContext(AuthContext)
 
     const [categories, setCategories] = useState([])
+
+    const [isCreatingTransactionLoading, setIsCreatingTransactionLoading] = useState(false)
+    const [transactionError, setTransactionError] = useState(null)
     const [transactionData, setTransactionData] = useState({
         userId: user._id,
         type: "", //expense/income
@@ -18,8 +21,6 @@ export default function TransactionManagement() {
         description: "",
         location: "",
     })
-
-    // console.log(user)
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -38,7 +39,50 @@ export default function TransactionManagement() {
         }))
     }
 
-    console.log(transactionData)
+    const handleOnSubmit = async (e) => {
+        e.preventDefault()
+        setIsCreatingTransactionLoading(true)
+        setTransactionError(null)
+        try {
+            const res = await postRequest(`${baseUrl}/transactions/addTransaction`, JSON.stringify(transactionData))
+            if (res.error) {
+                return setTransactionError(res)
+            }
+
+            //clear input fields
+            setTransactionData(prev => ({
+                ...prev,
+                type: "",
+                category: "",
+                currency: "",
+                amount: "",
+                paymentMethod: "",
+                description: "",
+                location: ""
+            }))
+        } catch (error) {
+            console.error("Error creating transaction", error)
+            setTransactionError(error.message)
+        } finally {
+            setIsCreatingTransactionLoading(false)
+        }
+    }
+
+    const handleReset = (e) => {
+        e.preventDefault()
+        setIsCreatingTransactionLoading(false)
+        setTransactionError(null)
+        setTransactionData(prev => ({
+            ...prev,
+            type: "",
+            category: "",
+            currency: "",
+            amount: "",
+            paymentMethod: "",
+            description: "",
+            location: ""
+        }))
+    }
 
     const categoriesList = categories.map((category, index) => {
         return (
@@ -64,6 +108,7 @@ export default function TransactionManagement() {
             <h1>Transaction Management</h1>
             <form
                 className="transactions-form"
+                onSubmit={handleOnSubmit}
             >
                 <div className="transactions-form-input">
                     <label htmlFor="type">Transaction Type:</label>
@@ -146,7 +191,16 @@ export default function TransactionManagement() {
                         onChange={handleInputChange}
                     ></input>
                 </div>
+                <button type="submit">{isCreatingTransactionLoading ? "Creating Transaction" : "Create Transaction"}</button>
+                <button
+                    className="btn-transactions-refresh"
+                    onClick={handleReset}
+                >Reset Form</button>
             </form>
+            {transactionError && 
+                <span className="transactions-warning">
+                    {transactionError.message}
+                </span>}
         </div>
     )
 }
