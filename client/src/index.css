@@ -8,6 +8,7 @@ body {
     background: #000;
     font-family: 'Nunito', sans-serif;
     user-select: none;
+    color: #fff;
 }
 
 /*
@@ -322,3 +323,30 @@ td {
     align-items: center;
     padding: 1px;
 }
+
+/*TRANSACTION MANAGEMENT*/
+.transaction-management {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.transactions-form {
+    margin-top: 1rem;
+}
+
+.transactions-form-input {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    margin-bottom: 1rem;
+    border-radius: 3px;
+}
+
+.transactions-form-input input{
+    outline: none;
+    text-indent: 0.5rem;
+}
+
+

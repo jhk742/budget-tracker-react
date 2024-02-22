@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { baseUrl, postRequest, getRequest, patchRequest, deleteRequest } from '../utils/services'
 
 
