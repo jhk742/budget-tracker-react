@@ -174,6 +174,7 @@ Categories
 */
 .CategoryManagement {
     color: #fff;
+    position: relative;
 }
 
 .categories-container {
@@ -330,6 +331,7 @@ td {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    position: relative;
 }
 
 .transactions-form {
@@ -388,4 +390,36 @@ td {
     position: absolute;
     top: 25%;
     left: 1%;
+}
+
+.transaction-alert-success, .category-alert-success {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #808080;
+    width: 50%;
+    height: 15vh;
+    border-radius: 3px;
+    color: #fff;
+    position: absolute;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.category-alert-success {
+    top: 30%;
+    left: 25%;
+}
+
+.close-successful-alert {
+    width: 50%;
+    height: 2rem;
+    border: none;
+    border-radius: 3px;
+    margin-top: 1rem;
+    background: #fff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
 }

@@ -11,6 +11,7 @@ export default function TransactionManagement() {
 
     const [isCreatingTransactionLoading, setIsCreatingTransactionLoading] = useState(false)
     const [transactionError, setTransactionError] = useState(null)
+    const [transactionSuccess, setTransactionSuccess] = useState(null)
     const [transactionData, setTransactionData] = useState({
         userId: user._id,
         type: "", //expense/income
@@ -49,6 +50,8 @@ export default function TransactionManagement() {
                 return setTransactionError(res)
             }
 
+            setTransactionSuccess("Transaction created successfully!")
+
             //clear input fields
             setTransactionData(prev => ({
                 ...prev,
@@ -60,6 +63,7 @@ export default function TransactionManagement() {
                 description: "",
                 location: ""
             }))
+
         } catch (error) {
             console.error("Error creating transaction", error)
             setTransactionError(error.message)
@@ -106,6 +110,19 @@ export default function TransactionManagement() {
     return (
         <div className="transaction-management">
             <h1>Transaction Management</h1>
+            {transactionSuccess && 
+                <div className="transaction-alert-success">
+                    <span>{transactionSuccess}</span>
+                    <button 
+                        className="close-successful-alert"
+                        onClick={() => {
+                            setTransactionSuccess(null)
+                        }}
+                    >
+                        Close
+                    </button>
+                </div>
+            }
             <form
                 className="transactions-form"
                 onSubmit={handleOnSubmit}

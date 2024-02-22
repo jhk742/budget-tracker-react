@@ -17,6 +17,9 @@ export default function CategoryManagement() {
         name: "",
         description: ""
     })
+    const [addSuccess, setAddSuccess] = useState(null)
+    const [updateSuccess, setUpdateSuccess] = useState(null)
+    const [deleteSuccess, setDeleteSuccess] = useState(null)
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -73,7 +76,8 @@ export default function CategoryManagement() {
             }
 
             ////create a state to show on successful operation
-            console.log("Successfully added category", res)
+            // console.log("Successfully added category", res)
+            setAddSuccess("Successfully added category!")
 
             //optimistic ui
             setCategories(prev => [...prev, res])
@@ -103,7 +107,8 @@ export default function CategoryManagement() {
             }
 
             ////create a state to show on successful operation
-            console.log("Category updated successfully", res)
+            // console.log("Category updated successfully", res)
+            setUpdateSuccess("Category updated successfully")
 
             //optimistic ui - update existing category with the new data
             const updatedCategories = categories.map((category) => {
@@ -145,7 +150,8 @@ export default function CategoryManagement() {
                 return setDeletingCategoryError(res)
 
                 //create a state to show on successful operation
-            console.log("Category deleted successfully.", res)
+            // console.log("Category deleted successfully", res)
+            setDeleteSuccess("Category deleted successfully")
 
             //update existing category by omitting the one that's been deleted
             const updatedCategories = categories.filter((category) => category._id !== res._id)
@@ -206,6 +212,25 @@ export default function CategoryManagement() {
 
     return (
         <div className="CategoryManagement">
+            {(addSuccess || updateSuccess || deleteSuccess) &&
+                <div
+                    className="category-alert-success"
+                >
+                    <span>
+                        {addSuccess && addSuccess}
+                        {updateSuccess && updateSuccess}
+                        {deleteSuccess && deleteSuccess}
+                    </span>
+                    <button
+                        className="close-successful-alert"
+                        onClick={() => {
+                            setAddSuccess(null)
+                            setUpdateSuccess(null)
+                            setDeleteSuccess(null)
+                        }}
+                    >Close</button>
+                </div>
+            }
             <div className="categories-container">
                 <h1>Category Management</h1>
                 <div className="categories-services-container">
