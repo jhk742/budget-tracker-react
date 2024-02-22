@@ -48,6 +48,15 @@ export default function Register() {
                             onChange={handleChange}
                         />
                     </label>
+                    <label>
+                        Initial Balance:
+                        <input
+                            type="number"
+                            name="initialBalance"
+                            onChange={handleChange}
+                            step="0.01"
+                        ></input>
+                    </label>
                     <button 
                         type="submit" 
                         className="btn-register-submit"

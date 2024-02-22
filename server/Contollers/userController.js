@@ -10,13 +10,15 @@ const createToken = (_id) => {
 
 //to register a user
 const registerUser = async (req, res) => {
+    const { name, email, password, initialBalance } = req.body
+    
+    console.log(req.body)
     try {
-        const { name, email, password} = req.body
         let user = await userModel.findOne({ email })
         if (user) 
             return res.status(400).json("User with the given email already exists")
 
-        if (!name || !email || !password)
+        if (!name || !email || !password || !initialBalance)
             return res.status(400).json("All fields are required")
 
         if (!validator.isEmail(email))
@@ -25,7 +27,7 @@ const registerUser = async (req, res) => {
             return res.status(400).json("Password must be a strong password")
 
         //all security conditions passed. Create a new isntance of the userModel to save to db
-        user = new userModel({ name, email, password })
+        user = new userModel({ name, email, password, initialBalance })
 
         const salt = await bcrypt.genSalt(10)
         user.password = await bcrypt.hash(user.password, salt)
@@ -35,7 +37,7 @@ const registerUser = async (req, res) => {
         const token = createToken(user._id)
 
         //send respose to client (inform of successful creation)
-        res.status(200).json({ _id: user._id, name, email, token })
+        res.status(200).json({ _id: user._id, name, email, initialBalance, token })
     } catch (error) {
         console.log(error)
         res.status(500).json(error)

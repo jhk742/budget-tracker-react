@@ -10,7 +10,8 @@ export const AuthContextProvider = ({ children }) => {
     const [registerInfo, setRegisterInfo] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        initialBalance: ""
     })
 
     const [loginError, setLoginError] = useState(null)
