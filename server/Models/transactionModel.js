@@ -14,6 +14,9 @@ const transactionSchema = new mongoose.Schema(
         paymentMethod: {type: String, required: true, minlength: 3, maxlength: 10},
         description: {type: String, required: false, minlength: 0, maxlength: 1024},
         location: {type: String, required: false, minlength: 0, maxlength: 200}
+    },
+    {
+        timestamps: true
     }
 )
 
