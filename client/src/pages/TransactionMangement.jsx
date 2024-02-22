@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { baseUrl, postRequest, getRequest } from '../utils/services'
 import { supportedCurrencies } from '../utils/currencies'
-
+import { AuthContext } from '../context/AuthContext'
 
 export default function TransactionManagement() {
 
+    const { user } = useContext(AuthContext)
+
     const [categories, setCategories] = useState([])
     const [transactionData, setTransactionData] = useState({
-        _id: "",
+        userId: user._id,
         type: "", //expense/income
         category: "",
         currency: "",
@@ -16,6 +18,8 @@ export default function TransactionManagement() {
         description: "",
         location: "",
     })
+
+    // console.log(user)
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -26,6 +30,7 @@ export default function TransactionManagement() {
     }, [])
 
     const handleInputChange = (e) => {
+
         const { name, value } = e.target
         setTransactionData(prev => ({
             ...prev,
@@ -33,7 +38,7 @@ export default function TransactionManagement() {
         }))
     }
 
-    // console.log(transactionData)
+    console.log(transactionData)
 
     const categoriesList = categories.map((category, index) => {
         return (

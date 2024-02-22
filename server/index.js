@@ -4,6 +4,7 @@ const mongoose = require("mongoose")
 
 const userRoute = require("./Routes/userRoute")
 const categoryRoute = require("./Routes/categoryRoute")
+const transactionRoute = require("./Routes/transactionRoute")
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use(cors())
 app.use("/api/users", userRoute)
 app.use("/api/categories", categoryRoute)
+app.use("/api/transactions", transactionRoute)
 
 const port = process.env.PORT || 5000
 const uri = process.env.ATLAS_URI
