@@ -368,3 +368,24 @@ td {
     color: #fff;
     transform: scale(1.03)
 }
+
+.transactions-warning {
+    background: orange;
+    color: #FF0000;
+    font-weight: bold;
+    width: 80%;
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    position: relative;
+}
+
+.tx-warning-sign {
+    height: 2rem;
+    width: 2rem;
+    position: absolute;
+    top: 25%;
+    left: 1%;
+}
