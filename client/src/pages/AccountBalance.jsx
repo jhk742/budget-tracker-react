@@ -15,9 +15,85 @@ export default function AccountBalance() {
         fetchTransactions()
     }, [])
 
+    /**
+     * <div className="categories-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {categoriesList}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+     */
+
     const transactionsList = transactions.map((transaction, index) => {
+        const { type, 
+            category, 
+            currency, 
+            amount, 
+            exchangedRate, 
+            userPreferredCurrency, 
+            paymentMethod, 
+            description, 
+            location, 
+            createdAt } = transaction
         return (
-            <div
+            <tr
+                key={index}
+            >
+                <td>{type}</td>
+                <td>{category}</td>
+                <td>{currency}</td>
+                <td>{amount}</td>
+                <td>{userPreferredCurrency}</td>
+                <td>{exchangedRate ? exchangedRate : amount}</td>
+                <td>{paymentMethod}</td>
+                <td>{description ? description : ""}</td>
+                <td>{location ? location : ""}</td>
+                <td>{new Date(transaction.createdAt).toLocaleDateString("en-US")}</td>
+            </tr>
+        )
+    })
+
+    return (
+        <div className="AccountBalance">
+            ACCOUNT BALANCE
+            <div className="account-balance-form-container">
+                <div className="account-balance-transactions-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction Type</th>
+                                <th>Category</th>
+                                <th>Base Currency</th>
+                                <th>Base Currency Amount</th>
+                                <th>Target Currency</th>
+                                <th>Target Currency Amount</th>
+                                <th>Payment Method</th>
+                                <th>Description</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {transactionsList}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+/**
+ * <div
                 key={index}
                 className="account-balance-transaction-info"
             >
@@ -58,15 +134,4 @@ export default function AccountBalance() {
                 </span>
 
             </div>
-        )
-    })
-
-    return (
-        <div className="AccountBalance">
-            ACCOUNT BALANCE
-            <div className="account-balance-form-container">
-                {transactionsList}
-            </div>
-        </div>
-    )
-}
+ */

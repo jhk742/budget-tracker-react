@@ -438,7 +438,7 @@ td {
     cursor: pointer;
 }
 
-/*ACCOUNT BALANCE*/
+/*ACCOUNT BALANCEaccount-balance-transaction-info*/
 .account-balance-transaction-info {
     display: flex;
     flex-direction: column;
