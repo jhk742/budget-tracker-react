@@ -22,8 +22,6 @@ export default function TransactionManagement() {
         userPreferredCurrency: user.preferredCurrency
     })
 
-    console.log(transactionData)
-
     useEffect(() => {
         const fetchCategories = async () => {
             const fetchedCategories = await getRequest(`${baseUrl}/categories/getCategories`)

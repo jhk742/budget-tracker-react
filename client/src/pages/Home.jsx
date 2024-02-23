@@ -5,10 +5,10 @@ import { AuthContext } from '../context/AuthContext'
 export default function Home() {
 
     const { user } = useContext(AuthContext)
-
+    
     return (
         <div className="Home">
-            <span>Current Balance: { user.balance.toFixed(2) }</span>
+            <span>Current Balance: { Number(user.balance).toFixed(2) }</span>
             <span>({ user.preferredCurrency })</span>
             <div className="home-features-container">
                 <Link to="/category-management">Category Management</Link>

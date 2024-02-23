@@ -437,3 +437,11 @@ td {
     font-weight: bold;
     cursor: pointer;
 }
+
+/*ACCOUNT BALANCE*/
+.account-balance-transaction-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
