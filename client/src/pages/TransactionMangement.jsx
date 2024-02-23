@@ -9,6 +9,7 @@ export default function TransactionManagement() {
     const [isCreatingTransactionLoading, setIsCreatingTransactionLoading] = useState(false)
     const [transactionError, setTransactionError] = useState(null)
     const [transactionSuccess, setTransactionSuccess] = useState(null)
+    const [exchangedRate, setExchangedRate] = useState(null)
     const [transactionData, setTransactionData] = useState({
         userId: user._id,
         type: "", //expense/income
@@ -27,6 +28,26 @@ export default function TransactionManagement() {
         }
         fetchCategories()
     }, [])
+
+    useEffect(() => {
+        const getExchangeRate = async () => {
+            const exchangeRateData = {
+                amount: transactionData.amount,
+                preferredCurrency: user.preferredCurrency.substring(0, 3),
+                providedCurrency: transactionData.currency.substring(0, 3)
+            }
+            try {
+                if (transactionData.amount && transactionData.currency) {
+                    const res = await postRequest(`${baseUrl}/transactions/convertRate`, JSON.stringify(exchangeRateData));
+                    setExchangedRate(res.exchangedRate)
+                } 
+            } catch (error) {
+                console.error(error)
+                return new Error(`Error fetching exchange rate: ${error.message}`) // Return null or handle the error condition
+            }
+        }
+        getExchangeRate()
+    }, [transactionData.currency, transactionData.amount])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -101,38 +122,8 @@ export default function TransactionManagement() {
             description: "",
             location: ""
         }))
+        setExchangedRate(null)
     }
-
-    useEffect(() => {
-        const getExchangeRate = async () => {
-            const exchangeRateData = {
-                amount: transactionData.amount,
-                preferredCurrency: user.preferredCurrency.substring(0, 3),
-                providedCurrency: transactionData.currency.substring(0, 3)
-            }
-    
-            try {
-                const res = await postRequest(`${baseUrl}/transactions/convertRate`, JSON.stringify(exchangeRateData));
-                return res.exchangedRate // Return the exchanged rate
-            } catch (error) {
-                console.error(error)
-                return new Error(`Error fetching exchange rate: ${error.message}`) // Return null or handle the error condition
-            }
-        }
-
-        const fetchExchangeRate = async () => {
-            try {
-                if (transactionData.amount && transactionData.currency) {
-                    const exchangedRate = await getExchangeRate()
-                    console.log(exchangedRate)
-                } 
-            } catch (error) {
-                console.error(`Error fetching exchange rate`, error)
-            }
-        }
-
-        fetchExchangeRate()
-    }, [transactionData.currency, transactionData.amount])
 
     const categoriesList = categories.map((category, index) => {
         return (
@@ -226,15 +217,14 @@ export default function TransactionManagement() {
                  * in place of the provided amount
                  * 
                  */
-                    // <div className="transactions-form-input"> 
-                    //     <label>CONVERTED RATE:</label>
-                    //     <textarea
-                    //         readOnly
-                    //         value={(user.preferredCurrency !== transactionData.currency) && transactionData.currency !== "" && transactionData.amount !== "" && transactionData.amount > 0 ? getExchangeRate() : ""}
-                    //     >
-                    //         {}
-                    //     </textarea>
-                    // </div>
+                    <div className="transactions-form-input"> 
+                        <label>{`Converted Rate (amount to be added to / deducted from your balance):`}</label>
+                        <textarea
+                            readOnly
+                            value={exchangedRate !== null ? `(${transactionData.currency.substring(0, 3)}) -> (${user.preferredCurrency.substring(0, 3)}) = ${transactionData.amount} -> ${exchangedRate} (this value will be added/deducted)` : ""}
+                        >
+                        </textarea>
+                    </div>
                 }
                 <div className="transactions-form-input">
                     <label htmlFor="paymentMethod">Payment Method:</label>

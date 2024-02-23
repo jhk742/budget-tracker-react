@@ -361,6 +361,10 @@ td {
     text-indent: 0.5rem;
 }
 
+.transactions-form-input textarea {
+    text-indent: 0.5rem;
+}
+
 .transactions-form button, .btn-transactions-refresh {
     width: 100%;
     height: 3rem;
