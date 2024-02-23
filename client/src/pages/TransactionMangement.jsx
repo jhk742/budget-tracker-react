@@ -18,8 +18,11 @@ export default function TransactionManagement() {
         paymentMethod: "",//card/cash
         description: "",
         location: "",
-        exchangedRate: ""
+        exchangedRate: "",
+        userPreferredCurrency: user.preferredCurrency
     })
+
+    console.log(transactionData)
 
     useEffect(() => {
         const fetchCategories = async () => {
