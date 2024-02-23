@@ -20,6 +20,8 @@ export default function TransactionManagement() {
         location: "",
     })
 
+    console.log(transactionData)
+
     useEffect(() => {
         const fetchCategories = async () => {
             const fetchedCategories = await getRequest(`${baseUrl}/categories/getCategories`)
@@ -29,8 +31,15 @@ export default function TransactionManagement() {
     }, [])
 
     const handleInputChange = (e) => {
-
         const { name, value } = e.target
+
+        if (name === "type" && value === "Income") {
+            setTransactionData(prev => ({
+                ...prev,
+                category: "Category input not required for income"
+            }))
+        }
+
         setTransactionData(prev => ({
             ...prev,
             [name]: value
@@ -152,6 +161,7 @@ export default function TransactionManagement() {
                         name="category"
                         value={transactionData.category}
                         onChange={handleInputChange}
+                        disabled={transactionData.type === "Income"}
                     >
                         <option value="">--- Select Category ---</option>
                         {categoriesList}
