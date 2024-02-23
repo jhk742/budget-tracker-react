@@ -8,7 +8,7 @@ export default function Home() {
 
     return (
         <div className="Home">
-            <span>Current Balance: { user.balance }</span>
+            <span>Current Balance: { user.balance.toFixed(2) }</span>
             <span>({ user.preferredCurrency })</span>
             <div className="home-features-container">
                 <Link to="/category-management">Category Management</Link>

@@ -9,7 +9,6 @@ export default function TransactionManagement() {
     const [isCreatingTransactionLoading, setIsCreatingTransactionLoading] = useState(false)
     const [transactionError, setTransactionError] = useState(null)
     const [transactionSuccess, setTransactionSuccess] = useState(null)
-    const [exchangedRate, setExchangedRate] = useState(null)
     const [transactionData, setTransactionData] = useState({
         userId: user._id,
         type: "", //expense/income
@@ -19,6 +18,7 @@ export default function TransactionManagement() {
         paymentMethod: "",//card/cash
         description: "",
         location: "",
+        exchangedRate: ""
     })
 
     useEffect(() => {
@@ -37,9 +37,12 @@ export default function TransactionManagement() {
                 providedCurrency: transactionData.currency.substring(0, 3)
             }
             try {
-                if (transactionData.amount && transactionData.currency) {
-                    const res = await postRequest(`${baseUrl}/transactions/convertRate`, JSON.stringify(exchangeRateData));
-                    setExchangedRate(res.exchangedRate)
+                if ((transactionData.amount && transactionData.currency) && user.preferredCurrency !== transactionData.currency) {
+                    const res = await postRequest(`${baseUrl}/transactions/convertRate`, JSON.stringify(exchangeRateData))
+                    setTransactionData((prev) => ({
+                        ...prev,
+                        exchangedRate: res.exchangedRate
+                    }))
                 } 
             } catch (error) {
                 console.error(error)
@@ -57,10 +60,8 @@ export default function TransactionManagement() {
                 ...prev,
                 category: "Category input not required for income"
             }))
-            //the return itself is not required as the category input
-            //will be disabled and will already be set with the text provided above,
-            //but better safe than sorry...
-            return
+            //if the value === "Income", the category select field
+            //will be disabled and will already be set with the text provided above
         }
 
         setTransactionData(prev => ({
@@ -74,7 +75,9 @@ export default function TransactionManagement() {
         setIsCreatingTransactionLoading(true)
         setTransactionError(null)
         try {
-            if (transactionData.type === "Expense" && (user.balance - transactionData.amount < 0)) {
+            let newAmount = transactionData.exchangedRate ? transactionData.exchangedRate : transactionData.amount
+
+            if (transactionData.type === "Expense" && (user.balance - newAmount < 0)) {
                 return setTransactionError({ message: "The amount you've entered exceeds your current balance." })
             }
 
@@ -84,8 +87,7 @@ export default function TransactionManagement() {
             }
 
             // // Update user's balance in the database
-            updateUserBalance(transactionData.type === "Income" ? Number(user.balance) + Number(transactionData.amount) : user.balance - transactionData.amount)
-
+            updateUserBalance(transactionData.type === "Income" ? Number(user.balance) + Number(newAmount) : user.balance - newAmount)
             setTransactionSuccess("Transaction created successfully!")
 
             //clear input fields
@@ -97,7 +99,8 @@ export default function TransactionManagement() {
                 amount: "",
                 paymentMethod: "",
                 description: "",
-                location: ""
+                location: "",
+                exchangedRate: ""
             }))
 
         } catch (error) {
@@ -120,9 +123,9 @@ export default function TransactionManagement() {
             amount: "",
             paymentMethod: "",
             description: "",
-            location: ""
+            location: "",
+            exchangedRate: ""
         }))
-        setExchangedRate(null)
     }
 
     const categoriesList = categories.map((category, index) => {
@@ -213,7 +216,7 @@ export default function TransactionManagement() {
                     ></input>
                 </div>
                 {/**IF user.preferredCurrency !== transactionData?.currency ,
-                 * have a <div>that shows the converted rate that is to be added
+                 * have a <textarea>that shows the converted rate that is to be added
                  * in place of the provided amount
                  * 
                  */
@@ -221,7 +224,7 @@ export default function TransactionManagement() {
                         <label>{`Converted Rate (amount to be added to / deducted from your balance):`}</label>
                         <textarea
                             readOnly
-                            value={exchangedRate !== null ? `(${transactionData.currency.substring(0, 3)}) -> (${user.preferredCurrency.substring(0, 3)}) = ${transactionData.amount} -> ${exchangedRate} (this value will be added/deducted)` : ""}
+                            value={transactionData.exchangedRate !== "" ? `(${transactionData.currency.substring(0, 3)}) -> (${user.preferredCurrency.substring(0, 3)}) = ${transactionData.amount} -> ${transactionData.exchangedRate} (this value will be added/deducted)` : ""}
                         >
                         </textarea>
                     </div>
