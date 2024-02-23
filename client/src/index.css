@@ -138,15 +138,25 @@ HOME
 */
 .Home {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    position: relative;
+}
+
+.Home span {
+    position: relative;
+    top: -30%;
+
 }
 
 .home-features-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
+    position: relative;
+    top: -20%;
 }
 
 .home-features-container > * {

@@ -75,8 +75,7 @@ export default function CategoryManagement() {
                 return setAddingCategoryError(res)
             }
 
-            ////create a state to show on successful operation
-            // console.log("Successfully added category", res)
+            //create a state to show on successful operation
             setAddSuccess("Successfully added category!")
 
             //optimistic ui
@@ -106,8 +105,7 @@ export default function CategoryManagement() {
                 return setUpdatingCategoryError(res)
             }
 
-            ////create a state to show on successful operation
-            // console.log("Category updated successfully", res)
+            //create a state to show on successful operation
             setUpdateSuccess("Category updated successfully")
 
             //optimistic ui - update existing category with the new data
@@ -149,8 +147,7 @@ export default function CategoryManagement() {
             if (res.error)
                 return setDeletingCategoryError(res)
 
-                //create a state to show on successful operation
-            // console.log("Category deleted successfully", res)
+            //create a state to show on successful operation
             setDeleteSuccess("Category deleted successfully")
 
             //update existing category by omitting the one that's been deleted

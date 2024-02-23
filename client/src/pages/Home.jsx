@@ -8,6 +8,8 @@ export default function Home() {
 
     return (
         <div className="Home">
+            <span>Current Balance: { user.balance }</span>
+            <span>({ user.preferredCurrency })</span>
             <div className="home-features-container">
                 <Link to="/category-management">Category Management</Link>
                 <Link to="/transaction-management">Transaction Management</Link>

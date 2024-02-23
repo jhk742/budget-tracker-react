@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
+import { supportedCurrencies } from '../utils/currencies'
 
 export default function Register() {
 
@@ -17,6 +18,16 @@ export default function Register() {
         })) 
     }
 
+    const currenciesList = supportedCurrencies.map((currency, index) => {
+        const { code, name } = currency
+        return (
+            <option
+                key={index}
+                value={`${code} - ${name}`}
+            >{`${code} - ${name}`}</option>
+        )
+    })
+
     return (
         <div className="Register">
             <div className="register-box">
@@ -29,6 +40,7 @@ export default function Register() {
                         <input 
                             type="text"
                             name="name"
+                            placeholder="John Doe"
                             onChange={handleChange}
                         />
                     </label>
@@ -37,6 +49,7 @@ export default function Register() {
                         <input 
                             type="email"
                             name="email"
+                            placeholder="johnDoe123@gmail.com"
                             onChange={handleChange}
                         />
                     </label>
@@ -49,10 +62,22 @@ export default function Register() {
                         />
                     </label>
                     <label>
+                        Preferred Currency:
+                        <select 
+                            id="preferredCurrency"
+                            name="preferredCurrency"
+                            onChange={handleChange}
+                        >
+                            <option value="">--- Select Currency ---</option>
+                            {currenciesList}
+                        </select>
+                    </label>
+                    <label>
                         Initial Balance:
                         <input
                             type="number"
                             name="balance"
+                            placeholder="1545.75"
                             onChange={handleChange}
                             step="0.01"
                         ></input>

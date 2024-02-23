@@ -4,13 +4,8 @@ import { supportedCurrencies } from '../utils/currencies'
 import { AuthContext } from '../context/AuthContext'
 
 export default function TransactionManagement() {
-
     const { user, updateUserBalance } = useContext(AuthContext)
-
     const [categories, setCategories] = useState([])
-
-    // console.log(user)
-
     const [isCreatingTransactionLoading, setIsCreatingTransactionLoading] = useState(false)
     const [transactionError, setTransactionError] = useState(null)
     const [transactionSuccess, setTransactionSuccess] = useState(null)
