@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { baseUrl, postRequest, getRequest } from '../utils/services'
+import { baseUrl, postRequest, getRequest} from '../utils/services'
 import { supportedCurrencies } from '../utils/currencies'
 import { AuthContext } from '../context/AuthContext'
 
@@ -20,8 +20,6 @@ export default function TransactionManagement() {
         location: "",
     })
 
-    console.log(transactionData)
-
     useEffect(() => {
         const fetchCategories = async () => {
             const fetchedCategories = await getRequest(`${baseUrl}/categories/getCategories`)
@@ -38,6 +36,10 @@ export default function TransactionManagement() {
                 ...prev,
                 category: "Category input not required for income"
             }))
+            //the return itself is not required as the category input
+            //will be disabled and will already be set with the text provided above,
+            //but better safe than sorry...
+            return
         }
 
         setTransactionData(prev => ({
@@ -51,7 +53,6 @@ export default function TransactionManagement() {
         setIsCreatingTransactionLoading(true)
         setTransactionError(null)
         try {
-
             if (transactionData.type === "Expense" && (user.balance - transactionData.amount < 0)) {
                 return setTransactionError({ message: "The amount you've entered exceeds your current balance." })
             }
@@ -101,6 +102,37 @@ export default function TransactionManagement() {
             location: ""
         }))
     }
+
+    useEffect(() => {
+        const getExchangeRate = async () => {
+            const exchangeRateData = {
+                amount: transactionData.amount,
+                preferredCurrency: user.preferredCurrency.substring(0, 3),
+                providedCurrency: transactionData.currency.substring(0, 3)
+            }
+    
+            try {
+                const res = await postRequest(`${baseUrl}/transactions/convertRate`, JSON.stringify(exchangeRateData));
+                return res.exchangedRate // Return the exchanged rate
+            } catch (error) {
+                console.error(error)
+                return new Error(`Error fetching exchange rate: ${error.message}`) // Return null or handle the error condition
+            }
+        }
+
+        const fetchExchangeRate = async () => {
+            try {
+                if (transactionData.amount && transactionData.currency) {
+                    const exchangedRate = await getExchangeRate()
+                    console.log(exchangedRate)
+                } 
+            } catch (error) {
+                console.error(`Error fetching exchange rate`, error)
+            }
+        }
+
+        fetchExchangeRate()
+    }, [transactionData.currency, transactionData.amount])
 
     const categoriesList = categories.map((category, index) => {
         return (
@@ -189,6 +221,21 @@ export default function TransactionManagement() {
                         onChange={handleInputChange}
                     ></input>
                 </div>
+                {/**IF user.preferredCurrency !== transactionData?.currency ,
+                 * have a <div>that shows the converted rate that is to be added
+                 * in place of the provided amount
+                 * 
+                 */
+                    // <div className="transactions-form-input"> 
+                    //     <label>CONVERTED RATE:</label>
+                    //     <textarea
+                    //         readOnly
+                    //         value={(user.preferredCurrency !== transactionData.currency) && transactionData.currency !== "" && transactionData.amount !== "" && transactionData.amount > 0 ? getExchangeRate() : ""}
+                    //     >
+                    //         {}
+                    //     </textarea>
+                    // </div>
+                }
                 <div className="transactions-form-input">
                     <label htmlFor="paymentMethod">Payment Method:</label>
                     <select
