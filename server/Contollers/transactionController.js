@@ -86,8 +86,43 @@ const getTransactions = async (req, res) => {
     }
 }
 
+const filterTransactions = async (req, res) => {
+    const { userId, date, transactionType, paymentMethod } = req.params
+    try {
+        
+        const sanitizedDate = date === "null" ? "" : date
+        const sanitizedTransactionType = transactionType === "null" ? "" : transactionType;
+        const sanitizedPaymentMethod = paymentMethod === "null" ? "" : paymentMethod;
+
+
+        let query = { userId }
+
+        //needs more work
+        if (sanitizedDate) {
+            query.createdAt = sanitizedDate
+        }
+
+        if (sanitizedTransactionType) {
+            query.type = sanitizedTransactionType.charAt(0).toUpperCase() + sanitizedTransactionType.slice(1)
+        }
+
+        if (sanitizedPaymentMethod) {
+            query.paymentMethod = sanitizedPaymentMethod.charAt(0).toUpperCase() + sanitizedPaymentMethod.slice(1)
+        }
+
+        const response = await transactionModel.find(query)
+        res.status(200).json({
+            transactions: response
+        })
+    } catch (error) {
+        console.error("Error fetching transactions: ", error)
+        res.status(500).json({ message: `Internal server error ${userId} ${date} ${transactionType} ${paymentMethod}` })
+    }
+}
+
 module.exports = {
     addTransaction,
     convertRate,
-    getTransactions
+    getTransactions,
+    filterTransactions
 }

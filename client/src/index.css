@@ -475,10 +475,9 @@ td {
     border-bottom: 1px solid #fff;
 }
 
-.account-balance-filter-options {
+.filter-options {
     display: flex;
     width: 100%;
-    justify-content: space-evenly;
 }
 
 .filter-option {

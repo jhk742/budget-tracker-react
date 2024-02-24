@@ -14,8 +14,8 @@ export default function AccountBalance() {
 
     useEffect(() => {
         const fetchTransactions = async () => {
-            const fetchedTransacotions = await getRequest(`${baseUrl}/transactions/getTransactions/${user._id}`)
-            setTransactions(fetchedTransacotions.transactions)
+            const fetchedTransactions = await getRequest(`${baseUrl}/transactions/getTransactions/${user._id}`)
+            setTransactions(fetchedTransactions.transactions)
         }
         fetchTransactions()
     }, [])
@@ -57,62 +57,83 @@ export default function AccountBalance() {
         }))
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const res = await getRequest(`${baseUrl}/transactions/getFilteredTransactions/${user._id}/${filterData.transactionType || "null"}/${filterData.paymentMethod || "null"}/${filterData.date || "null"}`)
+            setTransactions(res.transactions)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         <div className="AccountBalance">
             <h1>Account Balance</h1>
             <div className="account-balance-form-container">
                 <div className="account-balance-filter-container">
                     <h2>Filter Options</h2>
-                    <div className="account-balance-filter-options">
-                        <div className="filter-option">
-                            <label htmlFor="date">Date:</label>
-                            <select
-                                id="date"
-                                name="date"
-                                value={filterData.date}
-                                onChange={handleFilters}
-                            >
-                                <option value="">--- Select Date Component --- </option>
-                                <option value="day">By Day</option>
-                                <option value="month">By Month</option>
-                                <option value="year">By Year</option>
-                            </select>
+                    <form 
+                        onSubmit={handleSubmit}
+                    >
+                        <div className="filter-options">
+                            <div className="filter-option">
+                                <label htmlFor="date">Date:</label>
+                                <select
+                                    id="date"
+                                    name="date"
+                                    value={filterData.date}
+                                    onChange={handleFilters}
+                                >
+                                    <option value="">--- Select Date Component --- </option>
+                                    <option value="day">By Day</option>
+                                    <option value="month">By Month</option>
+                                    <option value="year">By Year</option>
+                                </select>
+                            </div>
+                            <div className="filter-option">
+                                <label htmlFor="transactionType">Transaction Type:</label>
+                                <select
+                                    id="transactionType"
+                                    name="transactionType"
+                                    value={filterData.transactionType}
+                                    onChange={handleFilters}
+                                >
+                                    <option value="">--- Select Transaction Type ---</option>
+                                    <option value="expense">By Expense</option>
+                                    <option value="income">By Income</option>
+                                </select>
+                            </div>
+                            <div className="filter-option">
+                                <label htmlFor="paymentMethod">Payment Method:</label>
+                                <select
+                                    id="paymentMethod"
+                                    name="paymentMethod"
+                                    value={filterData.paymentMethod}
+                                    onChange={handleFilters}
+                                >
+                                    <option value="">--- Select Payment Method ---</option>
+                                    <option value="card">By Card</option>
+                                    <option value="cash">By Cash</option>
+                                </select>
+                            </div>
                         </div>
-                        <div className="filter-option">
-                            <label htmlFor="transactionType">Transaction Type:</label>
-                            <select
-                                id="transactionType"
-                                name="transactionType"
-                                value={filterData.transactionType}
-                                onChange={handleFilters}
-                            >
-                                <option value="">--- Select Transaction Type ---</option>
-                                <option value="expense">By Expense</option>
-                                <option value="income">By Income</option>
-                            </select>
+                        <div className="btn-filters">
+                            <button 
+                                type="submit"
+                            >APPLY FILTER(S)</button>
+                            <button
+                                onClick={() => {
+                                    setFilterData(prev => ({
+                                        ...prev,
+                                        date: "",
+                                        transactionType: "",
+                                        paymentMethod: ""
+                                    }))
+                                }}
+                            >RESET FILTER(S) / ALL RESULTS</button>
                         </div>
-                        <div className="filter-option">
-                            <label htmlFor="paymentMethod">Payment Method:</label>
-                            <select
-                                id="paymentMethod"
-                                name="paymentMethod"
-                                value={filterData.paymentMethod}
-                                onChange={handleFilters}
-                            >
-                                <option value="">--- Select Payment Method ---</option>
-                                <option value="card">By Card</option>
-                                <option value="cash">By Cash</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="btn-filters">
-                        <button
-                            
-                        >APPLY FILTER(S)</button>
-                        <button
-                            
-                        >RESET FILTER(S)</button>
-                    </div>
+                    </form>
                 </div>
                 <div className="account-balance-transactions-table">
                     <table>
