@@ -6,6 +6,11 @@ export default function AccountBalance() {
 
     const { user } = useContext(AuthContext)
     const [transactions, setTransactions] = useState([])
+    const [filterData, setFilterData] = useState({
+        date: "",
+        transactionType: "",
+        paymentMethod: ""
+    })
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -14,24 +19,6 @@ export default function AccountBalance() {
         }
         fetchTransactions()
     }, [])
-
-    /**
-     * <div className="categories-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {categoriesList}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    
-     */
 
     const transactionsList = transactions.map((transaction, index) => {
         const { type, 
@@ -57,15 +44,76 @@ export default function AccountBalance() {
                 <td>{paymentMethod}</td>
                 <td>{description ? description : ""}</td>
                 <td>{location ? location : ""}</td>
-                <td>{new Date(transaction.createdAt).toLocaleDateString("en-US")}</td>
+                <td>{new Date(createdAt).toLocaleDateString("en-US")}</td>
             </tr>
         )
     })
 
+    const handleFilters = (e) => {
+        const { name, value } = e.target
+        setFilterData((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
     return (
         <div className="AccountBalance">
-            ACCOUNT BALANCE
+            <h1>Account Balance</h1>
             <div className="account-balance-form-container">
+                <div className="account-balance-filter-container">
+                    <h2>Filter Options</h2>
+                    <div className="account-balance-filter-options">
+                        <div className="filter-option">
+                            <label htmlFor="date">Date:</label>
+                            <select
+                                id="date"
+                                name="date"
+                                value={filterData.date}
+                                onChange={handleFilters}
+                            >
+                                <option value="">--- Select Date Component --- </option>
+                                <option value="day">By Day</option>
+                                <option value="month">By Month</option>
+                                <option value="year">By Year</option>
+                            </select>
+                        </div>
+                        <div className="filter-option">
+                            <label htmlFor="transactionType">Transaction Type:</label>
+                            <select
+                                id="transactionType"
+                                name="transactionType"
+                                value={filterData.transactionType}
+                                onChange={handleFilters}
+                            >
+                                <option value="">--- Select Transaction Type ---</option>
+                                <option value="expense">By Expense</option>
+                                <option value="income">By Income</option>
+                            </select>
+                        </div>
+                        <div className="filter-option">
+                            <label htmlFor="paymentMethod">Payment Method:</label>
+                            <select
+                                id="paymentMethod"
+                                name="paymentMethod"
+                                value={filterData.paymentMethod}
+                                onChange={handleFilters}
+                            >
+                                <option value="">--- Select Payment Method ---</option>
+                                <option value="card">By Card</option>
+                                <option value="cash">By Cash</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="btn-filters">
+                        <button
+                            
+                        >APPLY FILTER(S)</button>
+                        <button
+                            
+                        >RESET FILTER(S)</button>
+                    </div>
+                </div>
                 <div className="account-balance-transactions-table">
                     <table>
                         <thead>
@@ -91,47 +139,3 @@ export default function AccountBalance() {
         </div>
     )
 }
-
-/**
- * <div
-                key={index}
-                className="account-balance-transaction-info"
-            >
-                <span>
-                    {transaction.type}
-                </span>
-
-                <span>
-                    {transaction.category}
-                </span>
-
-                <span>
-                    {`Base Currency Amount: ${transaction.amount}`}
-                </span>
-
-                <span>
-                    {`Base Currency: ${transaction.currency}`}
-                </span>
-
-                <span>
-                    {`Target Currency Amount: ${transaction.exchangedRate ? transaction.exchangedRate : transaction.amount}`}
-                </span>
-
-                <span>
-                    {`Taget Currency: ${transaction.userPreferredCurrency}`}
-                </span>
-
-                <span>
-                    {transaction.description ? transaction.description : ""}
-                </span>
-
-                <span>
-                    {transaction.location ? transaction.location : ""}
-                </span>
-
-                <span>
-                    {new Date(transaction.createdAt).toLocaleDateString("en-US")}
-                </span>
-
-            </div>
- */

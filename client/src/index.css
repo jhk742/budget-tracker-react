@@ -148,7 +148,7 @@ HOME
 .Home span {
     position: relative;
     top: -30%;
-
+    font-size: 2rem;
 }
 
 .home-features-container {
@@ -208,6 +208,7 @@ Categories
     height: 100%;
 }
 
+/*ALL TABLES*/
 table {
     border-collapse: collapse;
     width: 100%;
@@ -226,6 +227,7 @@ th {
 td {
     font-size: 0.9rem;
 }
+/*END OF TABLES*/
 
 .categories-functions {
     margin: 1rem 1rem 0px 0px;
@@ -439,9 +441,73 @@ td {
 }
 
 /*ACCOUNT BALANCEaccount-balance-transaction-info*/
+.AccountBalance {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.AccountBalance h1 {
+    margin-top: 1.5rem;
+}
+
 .account-balance-transaction-info {
     display: flex;
     flex-direction: column;
     margin-bottom: 1rem;
 }
 
+.account-balance-transactions-table {
+    margin-top: 2rem;
+}
+
+.account-balance-filter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+    border: 1px solid #fff;
+    height: 15vh;
+}
+
+.account-balance-filter-container h2 {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #fff;
+}
+
+.account-balance-filter-options {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.filter-option {
+    display: flex;
+    flex-direction: column;
+    width: 18rem;
+}
+
+.btn-filters {
+    margin-top: 1.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.btn-filters button {
+    width: 15rem;
+    height: 2rem;
+    border: none;
+    background: #000;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3 ease, color 0.3 ease, transform 0.3 ease;
+}
+
+.btn-filters button:hover {
+    background: #fff;
+    color: #000;
+    transform: scale(1.07)
+}
