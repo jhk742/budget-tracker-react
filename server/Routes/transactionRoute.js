@@ -6,5 +6,5 @@ const router = express.Router()
 router.post("/addTransaction", addTransaction)
 router.post("/convertRate", convertRate)
 router.get("/getTransactions/:userId", getTransactions)
-router.get("/getFilteredTransactions/:userId/:transactionType?/:paymentMethod?/:date?", filterTransactions)
+router.get("/getFilteredTransactions/:userId/:transactionType?/:paymentMethod?/:startDate?/:endDate?", filterTransactions)
 module.exports = router

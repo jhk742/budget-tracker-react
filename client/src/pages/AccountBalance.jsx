@@ -7,7 +7,10 @@ export default function AccountBalance() {
     const { user } = useContext(AuthContext)
     const [transactions, setTransactions] = useState([])
     const [filterData, setFilterData] = useState({
-        date: "",
+        date: {
+            startDate: "",
+            endDate: ""
+        },
         transactionType: "",
         paymentMethod: ""
     })
@@ -51,16 +54,33 @@ export default function AccountBalance() {
 
     const handleFilters = (e) => {
         const { name, value } = e.target
-        setFilterData((prev) => ({
-            ...prev,
-            [name]: value
-        }))
+        const regex = /^[0-9-]*$/
+
+        if (!regex.test(value)) {
+            return
+        }
+
+        if (name.includes('.')) {
+            const [nestedProperty, nestedKey] = name.split(".")
+            setFilterData((prev) => ({
+                ...prev,
+                [nestedProperty]: {
+                    ...prev[nestedProperty],
+                    [nestedKey]: value
+                }
+            }))
+        } else {
+            setFilterData((prev) => ({
+                ...prev,
+                [name]: value
+            }))
+        }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await getRequest(`${baseUrl}/transactions/getFilteredTransactions/${user._id}/${filterData.transactionType || "null"}/${filterData.paymentMethod || "null"}/${filterData.date || "null"}`)
+            const res = await getRequest(`${baseUrl}/transactions/getFilteredTransactions/${user._id}/${filterData.transactionType || "null"}/${filterData.paymentMethod || "null"}/${filterData.date.startDate || "null"}/${filterData.date.endDate || "null"}`)
             setTransactions(res.transactions)
         } catch (error) {
             console.error(error)
@@ -78,18 +98,26 @@ export default function AccountBalance() {
                     >
                         <div className="filter-options">
                             <div className="filter-option">
-                                <label htmlFor="date">Date:</label>
-                                <select
-                                    id="date"
-                                    name="date"
-                                    value={filterData.date}
+                                <label htmlFor="startDate">Start Date:</label>
+                                <input
+                                    type="text"
+                                    id="startDate"
+                                    name="date.startDate"
+                                    value={filterData.date.startDate}    
+                                    placeholder='Start Date: dd-mm-yyyy'
                                     onChange={handleFilters}
                                 >
-                                    <option value="">--- Select Date Component --- </option>
-                                    <option value="day">By Day</option>
-                                    <option value="month">By Month</option>
-                                    <option value="year">By Year</option>
-                                </select>
+                                </input>
+                                <label htmlFor="endDate">End Date:</label>
+                                <input
+                                    type="text"
+                                    id="endDate"
+                                    name="date.endDate"
+                                    value={filterData.date.endDate}    
+                                    placeholder='End Date: dd-mm-yyyy'
+                                    onChange={handleFilters}
+                                >
+                                </input>
                             </div>
                             <div className="filter-option">
                                 <label htmlFor="transactionType">Transaction Type:</label>
@@ -126,7 +154,10 @@ export default function AccountBalance() {
                                 onClick={() => {
                                     setFilterData(prev => ({
                                         ...prev,
-                                        date: "",
+                                        date: {
+                                            startDate: "",
+                                            endDate: ""
+                                        },
                                         transactionType: "",
                                         paymentMethod: ""
                                     }))

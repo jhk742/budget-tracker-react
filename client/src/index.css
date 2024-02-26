@@ -459,6 +459,7 @@ td {
 
 .account-balance-transactions-table {
     margin-top: 2rem;
+    overflow: auto;
 }
 
 .account-balance-filter-container {
@@ -467,7 +468,7 @@ td {
     align-items: center;
     margin-top: 2rem;
     border: 1px solid #fff;
-    height: 15vh;
+    height: 20vh;
 }
 
 .account-balance-filter-container h2 {

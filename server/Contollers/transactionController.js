@@ -86,20 +86,32 @@ const getTransactions = async (req, res) => {
     }
 }
 
+const formatDate = (dateString) => {
+    const [month, day, year] = dateString.split("-")
+    return `${year}-${month}-${day}`
+}
+
 const filterTransactions = async (req, res) => {
-    const { userId, date, transactionType, paymentMethod } = req.params
+    const { userId, startDate, endDate, transactionType, paymentMethod } = req.params
     try {
-        
-        const sanitizedDate = date === "null" ? "" : date
+        const sanitizedStartDate = startDate === "null" ? "" : formatDate(startDate)
+        const sanitizedEndDate = endDate === "null" ? "" : formatDate(endDate)
         const sanitizedTransactionType = transactionType === "null" ? "" : transactionType;
         const sanitizedPaymentMethod = paymentMethod === "null" ? "" : paymentMethod;
 
-
         let query = { userId }
 
-        //needs more work
-        if (sanitizedDate) {
-            query.createdAt = sanitizedDate
+        if (sanitizedStartDate && sanitizedEndDate) {
+            query.$expr = {
+                $and: [
+                    {
+                        $gte: [{ $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }}, sanitizedStartDate]
+                    },
+                    {
+                        $lte: [{ $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }}, sanitizedEndDate]
+                    }
+                ]
+            }
         }
 
         if (sanitizedTransactionType) {
@@ -116,7 +128,7 @@ const filterTransactions = async (req, res) => {
         })
     } catch (error) {
         console.error("Error fetching transactions: ", error)
-        res.status(500).json({ message: `Internal server error ${userId} ${date} ${transactionType} ${paymentMethod}` })
+        res.status(500).json({ message: `Internal server error` })
     }
 }
 
