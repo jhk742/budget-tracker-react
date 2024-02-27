@@ -19,7 +19,8 @@ export default function NavBar() {
                             location.pathname === "/category-management" ||
                             location.pathname === "/transaction-management" ||
                             location.pathname === "/account-balance" ||
-                            location.pathname === "/totals"
+                            location.pathname === "/totals" ||
+                            location.pathname === "/receipt-upload"
                         ) &&
                         <Link 
                             to="/"

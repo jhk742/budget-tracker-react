@@ -33,8 +33,6 @@ export default function AccountBalance() {
         fetchCategories()
     }, [])
 
-    console.log(filterData)
-
     const transactionsList = transactions?.map((transaction, index) => {
         const { type, 
             category, 

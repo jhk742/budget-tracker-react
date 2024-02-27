@@ -238,10 +238,31 @@ const getTotals = async (req, res) => {
     }
 }
 
+const getCategoryExpenses = async (req, res) => {
+    const { userId, category } = req.params
+    let query = { userId, category }
+    try {
+        const response = await transactionModel.find(query)
+        
+        if (response.length === 0)
+            return res.status(404).json({ message: "Could not find data" })
+        
+        const expenses = response.filter(transaction => transaction.type === "Expense")
+
+        res.status(200).json({
+            expenses
+        })
+
+    } catch (error) {
+
+    }
+}
+
 module.exports = {
     addTransaction,
     convertRate,
     getTransactions,
     filterTransactions,
-    getTotals
+    getTotals,
+    getCategoryExpenses
 }
