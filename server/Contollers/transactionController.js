@@ -158,26 +158,56 @@ const getTotals = async (req, res) => {
         
         const incomes = response.filter(transaction => transaction.type === "Income")
         const expenses = response.filter(transaction => transaction.type === "Expense")
-        const totalIncomeBaseCurrency = incomes.reduce((total, income) => total + income.amount, 0)
         const totalIncomePreferredCurrency = incomes.reduce((total, income) => total + (income?.exchangedRate || income.amount), 0)
-        const totalExpenseBaseCurrency = expenses.reduce((total, expense) => total + expense.amount, 0)
         const totalExpensePreferredCurrency = expenses.reduce((total, expense) => total + (expense?.exchangedRate || 0), 0)
-        
-        //temp to get all currencies
+
         const baseCurrencies = Array.from(
-                new Set(
-                    response
-                    .filter(transaction => transaction.currency !== transaction.userPreferredCurrency)
-                    .map(transaction => transaction.currency)
-                )
+            new Set(
+                response
+                .filter(transaction => transaction.currency !== transaction.userPreferredCurrency)
+                .map(transaction => transaction.currency)
             )
+        )
+
+        const alternativeCurrenciesIncome = baseCurrencies.map(currency => {
+            // Calculate the total base amount
+            const baseTotal = incomes.filter(transaction => transaction.currency === currency)
+                                     .reduce((total, income) => total + income.amount, 0)
+        
+            // Calculate the total exchanged amount using exchangedRate
+            const exchangedTotal = incomes.filter(transaction => transaction.currency === currency)
+                                          .reduce((total, income) => total + income.exchangedRate, 0)
+        
+            // Return an object representing the currency data
+            return {
+                currency,
+                baseTotal,
+                exchangedTotal
+            }
+        })
+
+        const alternativeCurrenciesExpenses = baseCurrencies.map(currency => {
+            // Calculate the total base amount
+            const baseTotal = expenses.filter(transaction => transaction.currency === currency)
+                                     .reduce((total, income) => total + income.amount, 0)
+        
+            // Calculate the total exchanged amount using exchangedRate
+            const exchangedTotal = expenses.filter(transaction => transaction.currency === currency)
+                                          .reduce((total, income) => total + income.exchangedRate, 0)
+        
+            // Return an object representing the currency data
+            return {
+                currency,
+                baseTotal,
+                exchangedTotal
+            }
+        })
 
         res.status(200).json({
-            totalIncomeBaseCurrency,
             totalIncomePreferredCurrency,
-            totalExpenseBaseCurrency,
             totalExpensePreferredCurrency,
-            baseCurrencies
+            alternativeCurrenciesIncome,
+            alternativeCurrenciesExpenses
         })
     } catch (error) {
         console.error("Error fetching transactions: ", error)

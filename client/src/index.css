@@ -511,3 +511,27 @@ td {
     color: #000;
     transform: scale(1.07)
 }
+
+/*TOTALS*/
+
+.Totals {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5rem;
+}
+
+.totals-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.totals-sub-info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+}
+
+.alternative-currencies-info {
+    margin-top: 0.5rem;
+}
