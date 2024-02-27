@@ -162,11 +162,22 @@ const getTotals = async (req, res) => {
         const totalIncomePreferredCurrency = incomes.reduce((total, income) => total + (income?.exchangedRate || income.amount), 0)
         const totalExpenseBaseCurrency = expenses.reduce((total, expense) => total + expense.amount, 0)
         const totalExpensePreferredCurrency = expenses.reduce((total, expense) => total + (expense?.exchangedRate || 0), 0)
+        
+        //temp to get all currencies
+        const baseCurrencies = Array.from(
+                new Set(
+                    response
+                    .filter(transaction => transaction.currency !== transaction.userPreferredCurrency)
+                    .map(transaction => transaction.currency)
+                )
+            )
+
         res.status(200).json({
             totalIncomeBaseCurrency,
             totalIncomePreferredCurrency,
             totalExpenseBaseCurrency,
-            totalExpensePreferredCurrency
+            totalExpensePreferredCurrency,
+            baseCurrencies
         })
     } catch (error) {
         console.error("Error fetching transactions: ", error)
