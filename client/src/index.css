@@ -518,7 +518,7 @@ td {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 5rem;
+    margin-top: 2rem;
 }
 
 .totals-info {
@@ -529,7 +529,7 @@ td {
 .totals-sub-info {
     display: flex;
     flex-direction: column;
-    margin-top: 2rem;
+    margin-top: 1rem;
     border: 1px solid #fff;
     padding: 1rem;
 }

@@ -172,6 +172,7 @@ export default function AccountBalance() {
                                     name="category"
                                     value={filterData.category}
                                     onChange={handleFilters}
+                                    disabled={filterData.transactionType === "income"}
                                 >
                                     <option value="">--- Select Category ---</option>
                                     {categoriesList}

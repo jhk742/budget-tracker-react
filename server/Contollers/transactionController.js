@@ -222,7 +222,6 @@ const getTotals = async (req, res) => {
         const alternativeCurrenciesTotalIncome = alternativeCurrenciesIncome.reduce((total, currencyTotal) => total + currencyTotal.exchangedTotal, 0)
         const alternativeCurrenciesTotalExpense = alternativeCurrenciesExpenses.reduce((total, currencyTotal) => total + currencyTotal.exchangedTotal, 0)
 
-
         res.status(200).json({
             totalIncomePreferredCurrency,
             totalExpensePreferredCurrency,
