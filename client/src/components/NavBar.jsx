@@ -12,12 +12,14 @@ export default function NavBar() {
             <span className="nav-app-name">Budget Tracker</span>
             {user && <span className="nav-logged-user">Logged in as {user.name}</span>}
             {user ? (
+                //if user is logged in
                 <div>
                     {
                         (
                             location.pathname === "/category-management" ||
                             location.pathname === "/transaction-management" ||
-                            location.pathname === "/account-balance"
+                            location.pathname === "/account-balance" ||
+                            location.pathname === "/totals"
                         ) &&
                         <Link 
                             to="/"
@@ -35,6 +37,7 @@ export default function NavBar() {
                     </Link>
                 </div>
                 ) : (
+                    //If user is not logged-in
                     <div className="navbar-items">
                         {location.pathname === "/register" && <Link
                             to="/login"

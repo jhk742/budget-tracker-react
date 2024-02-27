@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import AccountBalance from './pages/AccountBalance'
 import CategoryManagement from './pages/CategoryManagement'
 import TransactionManagement from './pages/TransactionMangement'
+import Totals from './pages/Totals'
 
 
 export default function App() {
@@ -25,7 +26,8 @@ export default function App() {
           <Route path="/login" element={user ? <Home /> : <Login />} />
           <Route path="/category-management" element={user ? <CategoryManagement /> : <Login />}/>
           <Route path="/transaction-management" element={user ? <TransactionManagement /> : <Login />}/>
-          <Route path="account-balance" element={user ? <AccountBalance /> : <Login />}/>
+          <Route path="/account-balance" element={user ? <AccountBalance /> : <Login />}/>
+          <Route path="/totals" element={user ? <Totals /> : <Login />} />
         </Routes>
       </>
     </>

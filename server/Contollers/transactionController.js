@@ -128,6 +128,10 @@ const filterTransactions = async (req, res) => {
         }
 
         const response = await transactionModel.find(query)
+
+        if (response.length === 0)
+            return res.status(404).json({ message: "Could not find data" })
+
         res.status(200).json({
             transactions: response
         })
@@ -137,9 +141,43 @@ const filterTransactions = async (req, res) => {
     }
 }
 
+const getTotals = async (req, res) => {
+    const { userId, category } = req.params
+    let query = { userId }
+    const sanitizedCategory = category === "null" ? "" : category
+
+    if (sanitizedCategory) {
+        query.category = sanitizedCategory
+    }
+
+    try {
+        const response = await transactionModel.find(query)
+
+        if (response.length === 0)
+            return res.status(404).json({ message: "Could not find data" })
+        
+        const incomes = response.filter(transaction => transaction.type === "Income")
+        const expenses = response.filter(transaction => transaction.type === "Expense")
+        const totalIncomeBaseCurrency = incomes.reduce((total, income) => total + income.amount, 0)
+        const totalIncomePreferredCurrency = incomes.reduce((total, income) => total + (income?.exchangedRate || income.amount), 0)
+        const totalExpenseBaseCurrency = expenses.reduce((total, expense) => total + expense.amount, 0)
+        const totalExpensePreferredCurrency = expenses.reduce((total, expense) => total + (expense?.exchangedRate || 0), 0)
+        res.status(200).json({
+            totalIncomeBaseCurrency,
+            totalIncomePreferredCurrency,
+            totalExpenseBaseCurrency,
+            totalExpensePreferredCurrency
+        })
+    } catch (error) {
+        console.error("Error fetching transactions: ", error)
+        res.status(500).json({ message: `Internal server error: ${error} `})
+    }
+}
+
 module.exports = {
     addTransaction,
     convertRate,
     getTransactions,
-    filterTransactions
+    filterTransactions,
+    getTotals
 }

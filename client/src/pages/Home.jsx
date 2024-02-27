@@ -14,6 +14,7 @@ export default function Home() {
                 <Link to="/category-management">Category Management</Link>
                 <Link to="/transaction-management">Transaction Management</Link>
                 <Link to="/account-balance">Account Balance</Link>
+                <Link to="/totals">Totals</Link>
             </div>
         </div>
     )
