@@ -530,8 +530,18 @@ td {
     display: flex;
     flex-direction: column;
     margin-top: 2rem;
+    border: 1px solid #fff;
+    padding: 1rem;
 }
 
 .alternative-currencies-info {
     margin-top: 0.5rem;
+}
+
+.Totals h2 {
+    text-decoration: underline;
+}
+
+.alternative-total {
+    margin-top: 1rem;
 }

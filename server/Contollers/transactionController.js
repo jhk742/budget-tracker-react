@@ -158,8 +158,24 @@ const getTotals = async (req, res) => {
         
         const incomes = response.filter(transaction => transaction.type === "Income")
         const expenses = response.filter(transaction => transaction.type === "Expense")
+        
+        //total income displayed in preferred currency
         const totalIncomePreferredCurrency = incomes.reduce((total, income) => total + (income?.exchangedRate || income.amount), 0)
-        const totalExpensePreferredCurrency = expenses.reduce((total, expense) => total + (expense?.exchangedRate || 0), 0)
+        
+        //total expenditure displayed in preferred currency
+        const totalExpensePreferredCurrency = expenses.reduce((total, expense) => total + (expense.currency === expense.userPreferredCurrency ? expense.amount : expense?.exchangedRate), 0)
+
+        //total income from preferred currency
+        const incomePreferredCurrency = incomes.filter(transaction => {
+            return transaction.currency === transaction.userPreferredCurrency
+        })
+        .reduce((total, income) => total + income.amount, 0)
+
+        //total expenditure of preferred currency
+        const expensePreferredCurrency = expenses.filter(transaction => {
+            return transaction.currency === transaction.userPreferredCurrency
+        })
+        .reduce((total, expense) => total + expense.amount, 0)
 
         const baseCurrencies = Array.from(
             new Set(
@@ -203,11 +219,19 @@ const getTotals = async (req, res) => {
             }
         })
 
+        const alternativeCurrenciesTotalIncome = alternativeCurrenciesIncome.reduce((total, currencyTotal) => total + currencyTotal.exchangedTotal, 0)
+        const alternativeCurrenciesTotalExpense = alternativeCurrenciesExpenses.reduce((total, currencyTotal) => total + currencyTotal.exchangedTotal, 0)
+
+
         res.status(200).json({
             totalIncomePreferredCurrency,
             totalExpensePreferredCurrency,
             alternativeCurrenciesIncome,
-            alternativeCurrenciesExpenses
+            alternativeCurrenciesExpenses,
+            incomePreferredCurrency,
+            expensePreferredCurrency,
+            alternativeCurrenciesTotalIncome,
+            alternativeCurrenciesTotalExpense
         })
     } catch (error) {
         console.error("Error fetching transactions: ", error)

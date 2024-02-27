@@ -49,12 +49,20 @@ export default function Totals() {
                     <span>{`Total Expenditure: ${totals?.totalExpensePreferredCurrency} (${user.preferredCurrency.substring(0, 3)})`}</span>
                 </div>
                 <div className="totals-sub-info">
+                    <h2>Income / Expense of Preferred Currency</h2>
+                    <h4>{user.preferredCurrency}</h4>
+                    <span>{`Income: ${totals?.incomePreferredCurrency} (${user.preferredCurrency.substring(0, 3)})`}</span>
+                    <span>{`Expense: ${totals?.expensePreferredCurrency} (${user.preferredCurrency.substring(0, 3)})`}</span>
+                </div>
+                <div className="totals-sub-info">
                     <h2>Income from Alternative Currencies</h2>
                     {alternativeCurrenciesIncome}
+                    <h3 className="alternative-total">{`Total Income: ${totals.alternativeCurrenciesTotalIncome} (${user.preferredCurrency.substring(0, 3)})`}</h3>
                 </div>
                 <div className="totals-sub-info">
                     <h2>Expenses for Alternative Currencies</h2>
                     {alternativeCurrenciesExpenses}
+                    <h3 className="alternative-total">{`Total Expense: ${totals.alternativeCurrenciesTotalExpense} (${user.preferredCurrency.substring(0, 3)})`}</h3>
                 </div>
             </div>
         </div>
