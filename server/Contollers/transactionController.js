@@ -92,12 +92,13 @@ const formatDate = (dateString) => {
 }
 
 const filterTransactions = async (req, res) => {
-    const { userId, startDate, endDate, transactionType, paymentMethod } = req.params
+    const { userId, startDate, endDate, transactionType, paymentMethod, category } = req.params
     try {
         const sanitizedStartDate = startDate === "null" ? "" : formatDate(startDate)
         const sanitizedEndDate = endDate === "null" ? "" : formatDate(endDate)
-        const sanitizedTransactionType = transactionType === "null" ? "" : transactionType;
-        const sanitizedPaymentMethod = paymentMethod === "null" ? "" : paymentMethod;
+        const sanitizedTransactionType = transactionType === "null" ? "" : transactionType
+        const sanitizedPaymentMethod = paymentMethod === "null" ? "" : paymentMethod
+        const sanitizedCategory = category === "null" ? "" : category
 
         let query = { userId }
 
@@ -120,6 +121,10 @@ const filterTransactions = async (req, res) => {
 
         if (sanitizedPaymentMethod) {
             query.paymentMethod = sanitizedPaymentMethod.charAt(0).toUpperCase() + sanitizedPaymentMethod.slice(1)
+        }
+
+        if (sanitizedCategory) {
+            query.category = sanitizedCategory
         }
 
         const response = await transactionModel.find(query)

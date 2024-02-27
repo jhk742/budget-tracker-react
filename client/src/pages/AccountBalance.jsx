@@ -12,8 +12,10 @@ export default function AccountBalance() {
             endDate: ""
         },
         transactionType: "",
-        paymentMethod: ""
+        paymentMethod: "",
+        category: ""
     })
+    const [categories, setCategories] = useState([])
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -21,6 +23,14 @@ export default function AccountBalance() {
             setTransactions(fetchedTransactions.transactions)
         }
         fetchTransactions()
+    }, [])
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const fetchedCategories = await getRequest(`${baseUrl}/categories/getCategories`)
+            setCategories(fetchedCategories)
+        }
+        fetchCategories()
     }, [])
 
     const transactionsList = transactions.map((transaction, index) => {
@@ -52,15 +62,25 @@ export default function AccountBalance() {
         )
     })
 
+    const categoriesList = categories.map((category, index) => {
+        return (
+            <option
+                key={index}
+                value={category.name}
+            >
+                {category.name}
+            </option>
+        )
+    })
+
     const handleFilters = (e) => {
         const { name, value } = e.target
         const regex = /^[0-9-]*$/
 
-        if (!regex.test(value)) {
-            return
-        }
-
         if (name.includes('.')) {
+            if (!regex.test(value)) {
+                return
+            }
             const [nestedProperty, nestedKey] = name.split(".")
             setFilterData((prev) => ({
                 ...prev,
@@ -80,7 +100,7 @@ export default function AccountBalance() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await getRequest(`${baseUrl}/transactions/getFilteredTransactions/${user._id}/${filterData.transactionType || "null"}/${filterData.paymentMethod || "null"}/${filterData.date.startDate || "null"}/${filterData.date.endDate || "null"}`)
+            const res = await getRequest(`${baseUrl}/transactions/getFilteredTransactions/${user._id}/${filterData.transactionType || "null"}/${filterData.paymentMethod || "null"}/${filterData.category || "null"}/${filterData.date.startDate || "null"}/${filterData.date.endDate || "null"}`)
             setTransactions(res.transactions)
         } catch (error) {
             console.error(error)
@@ -145,6 +165,18 @@ export default function AccountBalance() {
                                     <option value="cash">By Cash</option>
                                 </select>
                             </div>
+                            <div className="filter-option">
+                                <label htmlFor="category">Category:</label>
+                                <select
+                                    id="category"
+                                    name="category"
+                                    value={filterData.category}
+                                    onChange={handleFilters}
+                                >
+                                    <option value="">--- Select Category ---</option>
+                                    {categoriesList}
+                                </select>
+                            </div>
                         </div>
                         <div className="btn-filters">
                             <button 
@@ -159,7 +191,8 @@ export default function AccountBalance() {
                                             endDate: ""
                                         },
                                         transactionType: "",
-                                        paymentMethod: ""
+                                        paymentMethod: "",
+                                        category: ""
                                     }))
                                 }}
                             >RESET FILTER(S) / ALL RESULTS</button>

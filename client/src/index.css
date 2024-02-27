@@ -484,7 +484,7 @@ td {
 .filter-option {
     display: flex;
     flex-direction: column;
-    width: 18rem;
+    width: 14rem;
 }
 
 .btn-filters {
