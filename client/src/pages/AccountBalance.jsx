@@ -33,6 +33,8 @@ export default function AccountBalance() {
         fetchCategories()
     }, [])
 
+    console.log(filterData)
+
     const transactionsList = transactions.map((transaction, index) => {
         const { type, 
             category, 
@@ -89,7 +91,14 @@ export default function AccountBalance() {
                     [nestedKey]: value
                 }
             }))
-        } else {
+        } else if (name === "transactionType" && value === "income") {
+            setFilterData((prev) => ({
+                ...prev,
+                [name]: value,
+                category: ""
+            }))
+        }
+        else {
             setFilterData((prev) => ({
                 ...prev,
                 [name]: value
