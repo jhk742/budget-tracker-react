@@ -35,7 +35,7 @@ export default function AccountBalance() {
 
     console.log(filterData)
 
-    const transactionsList = transactions.map((transaction, index) => {
+    const transactionsList = transactions?.map((transaction, index) => {
         const { type, 
             category, 
             currency, 
