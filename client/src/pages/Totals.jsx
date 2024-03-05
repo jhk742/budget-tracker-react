@@ -12,10 +12,13 @@ export default function Totals() {
     const [totals, setTotals] = useState(null)
     const [viewOption, setViewOption] = useState("totals")
     const [categories, setCategories] = useState([])
-    const [transactions, setTransactions] = useState([])
+    const [transactions, setTransactions] = useState(null)
 
     console.log(transactions)
-
+    console.log(filterData)
+    // const stuff = transactions.map((transaction) => {
+        
+    // })
 
     useEffect(() => {
         const fetchTotals = async () => {
@@ -55,6 +58,21 @@ export default function Totals() {
     })
     : null
 
+    const alternativeCurrenciesExpensesByCategory = ((transactions && transactions.alternativeCurrenciesTotalExpense)
+        ? transactions.alternativeCurrenciesTotalExpense.map((currency, index) => {
+            return (
+                <div
+                    key={index}
+                    className="alternative-currencies-info"
+                >
+                    <h4>{currency.currency}</h4>
+                    <span>{`${currency.baseTotal} (${currency.currency.substring(0, 3)}) == ${currency.exchangedTotal} (${user.preferredCurrency.substring(0, 3)})`}</span>
+                </div>
+            )
+        })
+        : null
+    )
+
     const categoriesList = categories.map((category, index) => {
         return (
             <option
@@ -67,8 +85,10 @@ export default function Totals() {
     const grabCategoryExpenses = async (e) => {
         e.preventDefault()
         try {
-            const res = await getRequest(`${baseUrl}/transactions/getCategoryExpenses/${filterData.userId}/${filterData.category}`)
-            setTransactions(res)
+            if (filterData.category) {
+                const res = await getRequest(`${baseUrl}/transactions/getCategoryExpenses/${filterData.userId}/${filterData.category}`)
+                setTransactions(res)
+            }
         } catch (error) {
             console.error(error)
         }
@@ -78,7 +98,14 @@ export default function Totals() {
         <>
             <div>
                 <button
-                    onClick={() => setViewOption("totals")}
+                    onClick={() => {
+                        setViewOption("totals")
+                        setTransactions(null)
+                        setFilterData((prev) => ({
+                            ...prev,
+                            category: ""
+                        }))
+                    }}
                 >Totals</button>
                 <button
                     onClick={() => setViewOption("categories")}
@@ -118,18 +145,16 @@ export default function Totals() {
                     <div>
                         <form onSubmit={grabCategoryExpenses}>
                             <div className="totals-form-input">
-                                <label htmlFor="category">Select Category:</label>
+                                <label htmlFor="category">Selected Category:</label>
                                 <select
                                     id="category"
                                     name="category"
                                     onChange={(e) => {
-                                        setFilterData((prev) => {
-                                            const { name, value } = e.target
-                                            return ({
-                                                ...prev,
-                                                [name]: value
-                                            })
-                                        })
+                                        const { name, value } = e.target
+                                        setFilterData((prev) => ({
+                                            ...prev,
+                                            [name]: value
+                                        }))
                                     }}
                                 >
                                     <option value="">--- Select Category ---</option>
@@ -138,6 +163,38 @@ export default function Totals() {
                             </div>
                             <button type="submit">APPLY</button>
                         </form>
+                        {(transactions && transactions.alternativeCurrenciesTotalExpense)
+                            ? (
+                                <div className="Totals">
+                                    <div className="totals-info">
+                                        <div className="totals-sub-info">
+                                            <h2>
+                                                {`Total Expense`}
+                                            </h2>
+                                            <span>
+                                                {`${transactions?.total} (${user.preferredCurrency.substring(0, 3)})`}
+                                            </span>
+                                        </div>
+                                        <div className="totals-sub-info">
+                                            <h2>
+                                                Expense of Preferred Currency
+                                            </h2>
+                                            <h4>{user.preferredCurrency}</h4>
+                                            <span>
+                                                {`${transactions.preferredCurrencyTotal} (${user.preferredCurrency.substring(0, 3)})`}
+                                            </span>
+                                        </div>
+                                        <div className="totals-sub-info">
+                                            <h2>
+                                                Expense for Alternative Currencies
+                                            </h2>
+                                            {alternativeCurrenciesExpensesByCategory}
+                                        </div>
+                                    </div>
+                                </div>
+                                )
+                            : `${transactions?.message ? transactions.message : ""}`
+                        }
                     </div>
                 )
             }

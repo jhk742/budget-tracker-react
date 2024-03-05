@@ -245,16 +245,51 @@ const getCategoryExpenses = async (req, res) => {
         const response = await transactionModel.find(query)
         
         if (response.length === 0)
-            return res.status(404).json({ message: "Could not find data" })
+            return res.status(200).json({ message: "No data found with the specified category" });        
         
         const expenses = response.filter(transaction => transaction.type === "Expense")
+        const total = expenses.reduce((total, expense) => {
+            return total += expense.currency === expense.userPreferredCurrency ? expense.amount : expense.exchangedRate
+        }, 0)
+        const preferredCurrencyTotal = expenses.reduce((total, expense) => {
+            return total += expense.currency === expense.userPreferredCurrency ? expense.amount : 0
+        }, 0)
 
-        res.status(200).json({
-            expenses
+        const alternativeCurrencies = Array.from(
+            new Set(
+                expenses
+                    .filter(transaction => transaction.currency !== transaction.userPreferredCurrency)
+                    .map(transaction => transaction.currency)
+            )
+        )
+
+        const alternativeCurrenciesTotalExpense = alternativeCurrencies.map(currency => {
+            const baseTotal = expenses
+                                .filter(transaction => transaction.currency === currency)
+                                .reduce((total, expense) => {
+                                    return total + expense.amount
+                                }, 0)
+
+            const exchangedTotal = expenses
+                                .filter(transaction => transaction.currency === currency)
+                                .reduce((total, expense) => {
+                                    return total + expense.exchangedRate
+                                },0)
+            return {
+                currency,
+                baseTotal,
+                exchangedTotal
+            }
         })
 
+        res.status(200).json({
+            total,
+            preferredCurrencyTotal,
+            alternativeCurrenciesTotalExpense
+        })
     } catch (error) {
-
+        console.error("Error fetching transactions:", error)
+        res.status(500).json({ message: `Internal server error: ${error}`})
     }
 }
 
