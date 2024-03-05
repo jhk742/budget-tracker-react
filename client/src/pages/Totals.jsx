@@ -96,7 +96,7 @@ export default function Totals() {
 
     return (
         <>
-            <div>
+            <div className="totals-options">
                 <button
                     onClick={() => {
                         setViewOption("totals")
@@ -143,9 +143,12 @@ export default function Totals() {
                     )
                 : (
                     <div>
-                        <form onSubmit={grabCategoryExpenses}>
+                        <form 
+                            className="totals-category-form"
+                            onSubmit={grabCategoryExpenses}
+                        >
                             <div className="totals-form-input">
-                                <label htmlFor="category">Selected Category:</label>
+                                <label htmlFor="category">Select Category:</label>
                                 <select
                                     id="category"
                                     name="category"
@@ -193,7 +196,9 @@ export default function Totals() {
                                     </div>
                                 </div>
                                 )
-                            : `${transactions?.message ? transactions.message : ""}`
+                            : <span className="category-message">
+                                {`${transactions?.message ? transactions.message : ""}`}
+                            </span>
                         }
                     </div>
                 )
