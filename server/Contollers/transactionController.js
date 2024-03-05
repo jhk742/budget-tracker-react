@@ -245,7 +245,7 @@ const getCategoryExpenses = async (req, res) => {
         const response = await transactionModel.find(query)
         
         if (response.length === 0)
-            return res.status(200).json({ message: "No data found with the specified category" });        
+            return res.status(200).json({ message: "No data found for the specified category" });        
         
         const expenses = response.filter(transaction => transaction.type === "Expense")
         const total = expenses.reduce((total, expense) => {
