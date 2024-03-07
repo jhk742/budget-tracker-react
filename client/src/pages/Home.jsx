@@ -15,6 +15,7 @@ export default function Home() {
                 <Link to="/transaction-management">Transaction Management</Link>
                 <Link to="/account-balance">Account Balance</Link>
                 <Link to="/totals">Totals</Link>
+                <Link to="recurring-bills">Recurring Bills</Link>
                 <Link to="/receipt-upload">Upload Receipt</Link>
             </div>
         </div>

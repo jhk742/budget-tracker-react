@@ -598,3 +598,26 @@ td {
     display: flex;
     justify-content: center;
 }
+
+/*RECURRING BILLS*/
+
+.recurring-bills-form {
+    background: red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 5rem;
+}
+
+.recurring-bills-input {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin-bottom: 1rem;
+}
+
+.recurring-bills-input div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}

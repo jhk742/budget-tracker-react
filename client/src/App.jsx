@@ -10,6 +10,7 @@ import AccountBalance from './pages/AccountBalance'
 import CategoryManagement from './pages/CategoryManagement'
 import TransactionManagement from './pages/TransactionMangement'
 import Totals from './pages/Totals'
+import RecurringBills from './pages/RecurringBills'
 import ReceiptUpload from './pages/ReceiptUpload'
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/transaction-management" element={user ? <TransactionManagement /> : <Login />}/>
           <Route path="/account-balance" element={user ? <AccountBalance /> : <Login />}/>
           <Route path="/totals" element={user ? <Totals /> : <Login />} />
+          <Route path="recurring-bills" element={user ? <RecurringBills /> : <Login />} />
           <Route path="/receipt-upload" element={user ? <ReceiptUpload /> : <Login />} />
         </Routes>
       </>

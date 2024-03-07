@@ -20,7 +20,8 @@ export default function NavBar() {
                             location.pathname === "/transaction-management" ||
                             location.pathname === "/account-balance" ||
                             location.pathname === "/totals" ||
-                            location.pathname === "/receipt-upload"
+                            location.pathname === "/receipt-upload" ||
+                            location.pathname === "/recurring-bills"
                         ) &&
                         <Link 
                             to="/"
