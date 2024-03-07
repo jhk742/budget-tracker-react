@@ -15,7 +15,12 @@ const transactionSchema = new mongoose.Schema(
         description: {type: String, required: false, minlength: 0, maxlength: 1024},
         location: {type: String, required: false, minlength: 0, maxlength: 200},
         exchangedRate: {type: Number, required: false},
-        userPreferredCurrency: {type: String, required: true}
+        userPreferredCurrency: {type: String, required: true},
+        recurringBill: {type: Boolean, required: true},
+        timeElapsedBeforeNextPayment: {
+            value: {type: String, required: false},
+            unit: {type: String, required: false}
+        }
     },
     {
         timestamps: true

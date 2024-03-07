@@ -22,7 +22,7 @@ export default function RecurringBills() {
         }
     })
 
-    console.log(transactionData)
+    // console.log(transactionData)
 
     useEffect(() => {
         const fetchCategories = async () => {

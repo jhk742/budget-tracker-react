@@ -14,7 +14,9 @@ const addTransaction = async (req, res) => {
             description,
             location,
             exchangedRate,
-            userPreferredCurrency
+            userPreferredCurrency,
+            recurringBill,
+            timeElapsedBeforeNextPayment
     } = req.body
 
     try {
@@ -31,7 +33,9 @@ const addTransaction = async (req, res) => {
             description,
             location,
             exchangedRate,
-            userPreferredCurrency
+            userPreferredCurrency,
+            recurringBill,
+            timeElapsedBeforeNextPayment
         })
         await transaction.save()
 
@@ -46,7 +50,9 @@ const addTransaction = async (req, res) => {
             description,
             location,
             exchangedRate,
-            userPreferredCurrency
+            userPreferredCurrency,
+            recurringBill,
+            timeElapsedBeforeNextPayment
         })
     } catch (error) {
         console.log(error)

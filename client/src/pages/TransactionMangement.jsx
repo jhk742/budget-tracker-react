@@ -19,7 +19,12 @@ export default function TransactionManagement() {
         description: "",
         location: "",
         exchangedRate: "",
-        userPreferredCurrency: user.preferredCurrency
+        userPreferredCurrency: user.preferredCurrency,
+        recurringBill: false,
+        timeElapsedBeforeNextPayment: {
+            value: "",
+            unit: ""
+        }
     })
 
     useEffect(() => {
