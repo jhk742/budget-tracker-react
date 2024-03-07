@@ -4,10 +4,13 @@ import { supportedCurrencies } from '../utils/currencies'
 import { AuthContext } from '../context/AuthContext'
 
 export default function RecurringBills() {
-    const { user } = useContext(AuthContext)
+    const { user, updateUserBalance } = useContext(AuthContext)
     const [categories, setCategories] = useState([])
+    const [isCreatingTransaction, setIsCreatingTransaction] = useState(false)
+    const [transactionError, setTransactionError] = useState(null)
     const [transactionData, setTransactionData] = useState({
         userId: user._id,
+        type: "Expense",
         category: "",
         currency: "",
         amount: "",
@@ -16,9 +19,11 @@ export default function RecurringBills() {
         location: "",
         exchangedRate: "",
         userPreferredCurrency: user.preferredCurrency,
+        recurringBill: true,
         timeElapsedBeforeNextPayment: {
             value: "", //integer value
-            unit: ""//day, week, month, year
+            unit: "",//day, week, month, year,
+            startingDate: ""
         }
     })
 
@@ -57,7 +62,7 @@ export default function RecurringBills() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        if (name === "unit" || name === "value") {
+        if (name === "unit" || name === "value" || name === "startingDate") {
             setTransactionData((prev) => ({
                 ...prev,
                 timeElapsedBeforeNextPayment: {
@@ -70,6 +75,92 @@ export default function RecurringBills() {
                 ...prev,
                 [name]: value
             }))
+        }
+    }
+
+    // console.log(new Date(transactionData.timeElapsedBeforeNextPayment?.startingDate))
+    // console.log(new Date().toLocaleDateString(undefined, {
+    //     day: 'numeric', month: 'numeric', year: 'numeric'
+    // }))
+    const compareDate = (providedDate, option) => {
+        const today = new Date()
+        switch (option) {
+            case "lessThan":
+                if (providedDate.getFullYear() < today.getFullYear()) {
+                    return true
+                }
+                if (providedDate.getFullYear() === today.getFullYear() && providedDate.getMonth() < today.getMonth()) {
+                    return true
+                }
+                if (providedDate.getFullYear() === today.getFullYear() && providedDate.getMonth() === today.getMonth()) {
+                    return providedDate.getDate() < today.getDate()
+                }
+                break
+            case "same":
+                return (providedDate.getDate() === today.getDate() && providedDate.getMonth() === today.getMonth() && providedDate.getFullYear() === today.getFullYear())
+        }
+    }
+
+    // console.log(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate) < new Date())
+    console.log(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate))
+    // console.log(new Date())
+
+    // console.log(new Date().getFullYear())
+    // console.log(compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate)))
+
+    // console.log(transactionData)
+
+    // console.log(compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate), "same"))
+    console.log(transactionError)
+
+    const handleOnSubmit = async (e) => {
+        e.preventDefault()
+        setIsCreatingTransaction(true)
+        setTransactionError(null)
+
+        let newAmount = transactionData.exchangedRate ? transactionData.exchangedRate : transactionData.amount
+
+        try {
+            if (!transactionData.category || !transactionData.currency || !transactionData.amount || !transactionData.timeElapsedBeforeNextPayment.value || !transactionData.timeElapsedBeforeNextPayment.unit || !transactionData.timeElapsedBeforeNextPayment.startingDate) {
+                return setTransactionError({ message: "Please provide input for the following fields: 'Category', 'Currency', 'Amount', 'Interval', 'Unit', 'Starting Date'"})
+            }
+
+            if (transactionData.amount < 0) {
+                return setTransactionError({ message: "You have entered an invalid amount" })
+            }
+            
+            if (user.balance - newAmount < 0) {
+                return setTransactionError({ message: "The amount you've entered exceeds your current balance" })
+            }
+
+            if (compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate), "lessThan")) {
+                return setTransactionError({ message: `The starting date of a recurring bill must either be the current date, ${new Date().toLocaleDateString(undefined, {
+                    day: 'numeric', month: 'numeric', year: 'numeric'
+                })}, or greater` })
+            }
+
+            setTransactionData((prev) => ({
+                ...prev,
+                timeElapsedBeforeNextPayment: {
+                    ...prev.timeElapsedBeforeNextPayment,
+                    startingDate: new Date(prev.timeElapsedBeforeNextPayment.startingDate)
+                }
+            }))
+
+            const res = await postRequest(`${baseUrl}/transactions/addTransaction`, JSON.stringify(transactionData))
+
+            if (res.error) {
+                return setTransactionError(res)
+            }
+
+            //if startingDate === today, updateUserBalance
+            if (compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate), "same")) {
+                updateUserBalance(user.balance - newAmount)
+            }
+
+        } catch (error) {
+            console.error("Error creating transaction", error)
+            setTransactionError(error.message)
         }
     }
 
@@ -99,6 +190,7 @@ export default function RecurringBills() {
             <h1>Recurring Bills</h1>
             <form
                 className="recurring-bills-form"
+                onSubmit={handleOnSubmit}
             >
                 <div className="recurring-bills-input">
                     <label htmlFor="category">Category:</label>
@@ -190,6 +282,17 @@ export default function RecurringBills() {
                             <option value="Year">Year(s)</option>
                         </select>
                     </div>
+                    <div>
+                        <label htmlFor="datePicker">Starting Date:</label>
+                        <input
+                            type="text"
+                            id="datePicker"
+                            name="startingDate"
+                            value={transactionData.timeElapsedBeforeNextPayment.startingDate}
+                            placeholder='dd-mm-yyyy'
+                            onChange={handleInputChange}
+                        ></input>
+                    </div>
                 </div>
                 <div className="recurring-bills-buttons">
                     <button
@@ -209,7 +312,8 @@ export default function RecurringBills() {
                                 exchangedRate: "",
                                 timeElapsedBeforeNextPayment: {
                                     value: "",
-                                    unit: ""
+                                    unit: "",
+                                    startingDate: ""
                                 }
                             }))
                         }}

@@ -19,7 +19,8 @@ const transactionSchema = new mongoose.Schema(
         recurringBill: {type: Boolean, required: true},
         timeElapsedBeforeNextPayment: {
             value: {type: String, required: false},
-            unit: {type: String, required: false}
+            unit: {type: String, required: false},
+            startingDate: {type: Date, required: false}
         }
     },
     {

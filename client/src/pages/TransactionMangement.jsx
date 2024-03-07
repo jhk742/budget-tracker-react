@@ -23,7 +23,8 @@ export default function TransactionManagement() {
         recurringBill: false,
         timeElapsedBeforeNextPayment: {
             value: "",
-            unit: ""
+            unit: "",
+            startingDate: ""
         }
     })
 
@@ -80,13 +81,12 @@ export default function TransactionManagement() {
         e.preventDefault()
         setIsCreatingTransactionLoading(true)
         setTransactionError(null)
+        let newAmount = transactionData.exchangedRate ? transactionData.exchangedRate : transactionData.amount
         try {
-            let newAmount = transactionData.exchangedRate ? transactionData.exchangedRate : transactionData.amount
-
             if (transactionData.type === "Expense" && (user.balance - newAmount < 0)) {
                 return setTransactionError({ message: "The amount you've entered exceeds your current balance." })
             }
-
+            
             const res = await postRequest(`${baseUrl}/transactions/addTransaction`, JSON.stringify(transactionData))
             if (res.error) {
                 return setTransactionError(res)
