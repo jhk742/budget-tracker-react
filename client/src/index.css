@@ -605,6 +605,7 @@ td {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
 .recurring-bills-form {
@@ -653,3 +654,35 @@ td {
     background: #fff;
     color: #000;
 }
+
+.recurring-bill-message-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 40%;
+}
+
+.recurring-bill-success-message, .recurring-bill-error-message {
+    background: #808080;
+    height: 10rem;
+    display: flex;
+    width: 60%;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    position: relative;
+}
+
+.recurring-bill-success-message button, .recurring-bill-error-message button {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+

@@ -8,6 +8,7 @@ export default function RecurringBills() {
     const [categories, setCategories] = useState([])
     const [isCreatingTransaction, setIsCreatingTransaction] = useState(false)
     const [transactionError, setTransactionError] = useState(null)
+    const [transactionSuccess, setTransactionSuccess] = useState(null)
     const [transactionData, setTransactionData] = useState({
         userId: user._id,
         type: "Expense",
@@ -27,7 +28,7 @@ export default function RecurringBills() {
         }
     })
 
-    // console.log(transactionData)
+    console.log(transactionData)
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -78,10 +79,6 @@ export default function RecurringBills() {
         }
     }
 
-    // console.log(new Date(transactionData.timeElapsedBeforeNextPayment?.startingDate))
-    // console.log(new Date().toLocaleDateString(undefined, {
-    //     day: 'numeric', month: 'numeric', year: 'numeric'
-    // }))
     const compareDate = (providedDate, option) => {
         const today = new Date()
         switch (option) {
@@ -101,23 +98,10 @@ export default function RecurringBills() {
         }
     }
 
-    // console.log(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate) < new Date())
-    console.log(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate))
-    // console.log(new Date())
-
-    // console.log(new Date().getFullYear())
-    // console.log(compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate)))
-
-    // console.log(transactionData)
-
-    // console.log(compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate), "same"))
-    console.log(transactionError)
-
     const handleOnSubmit = async (e) => {
         e.preventDefault()
         setIsCreatingTransaction(true)
         setTransactionError(null)
-
         let newAmount = transactionData.exchangedRate ? transactionData.exchangedRate : transactionData.amount
 
         try {
@@ -158,10 +142,34 @@ export default function RecurringBills() {
                 updateUserBalance(user.balance - newAmount)
             }
 
+            setTransactionSuccess("Transaction created successfully!")
+
         } catch (error) {
             console.error("Error creating transaction", error)
             setTransactionError(error.message)
+        } finally {
+            setIsCreatingTransaction(false)
         }
+    }
+
+    const handleReset = (e) => {
+        e.preventDefault()
+        setTransactionData((prev) => ({
+            ...prev,
+            category: "",
+            currency: "",
+            amount: "",
+            description: "",
+            location: "",
+            exchangedRate: "",
+            timeElapsedBeforeNextPayment: {
+                value: "",
+                unit: "",
+                startingDate: ""
+            }
+        }))
+        setTransactionSuccess(null)
+        setTransactionError(null)
     }
 
     const categoriesList = categories.map((category, index) => {
@@ -297,30 +305,36 @@ export default function RecurringBills() {
                 <div className="recurring-bills-buttons">
                     <button
                         type="submit"
-                    >Create Bill</button>
+                    >{isCreatingTransaction ? "Creating Transaction..." : "Create Bill"}</button>
                     <button
-                        onClick={(e) => {
-                            e.preventDefault()
-                            setTransactionData((prev) => ({
-                                ...prev,
-                                category: "",
-                                currency: "",
-                                amount: "",
-                                paymentMethod: "",
-                                description: "",
-                                location: "",
-                                exchangedRate: "",
-                                timeElapsedBeforeNextPayment: {
-                                    value: "",
-                                    unit: "",
-                                    startingDate: ""
-                                }
-                            }))
-                        }}
+                        onClick={handleReset}
                     >Reset Form</button>
                 </div>
             </form>
-            
+            <div className="recurring-bill-message-box">
+                {transactionSuccess && 
+                    (
+                        <div className="recurring-bill-success-message">
+                            <span>Transaction Created Successfully</span>
+                            <button
+                                onClick={handleReset}
+                            >X</button>
+                        </div>
+                    )
+                }
+            </div>
+            <div className="recurring-bill-message-box">
+                {transactionError && 
+                    (
+                        <div className="recurring-bill-error-message">
+                            <span>{transactionError.message}</span>
+                            <button
+                                onClick={handleReset}
+                            >X</button>
+                        </div>
+                    )
+                }
+            </div>
         </div>
     )
 }
