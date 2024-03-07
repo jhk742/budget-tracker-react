@@ -95,7 +95,8 @@ export default function RecurringBills() {
     })
 
     return (
-        <div>
+        <div className="RecurringBills">
+            <h1>Recurring Bills</h1>
             <form
                 className="recurring-bills-form"
             >
@@ -190,8 +191,32 @@ export default function RecurringBills() {
                         </select>
                     </div>
                 </div>
-
+                <div className="recurring-bills-buttons">
+                    <button
+                        type="submit"
+                    >Create Bill</button>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault()
+                            setTransactionData((prev) => ({
+                                ...prev,
+                                category: "",
+                                currency: "",
+                                amount: "",
+                                paymentMethod: "",
+                                description: "",
+                                location: "",
+                                exchangedRate: "",
+                                timeElapsedBeforeNextPayment: {
+                                    value: "",
+                                    unit: ""
+                                }
+                            }))
+                        }}
+                    >Reset Form</button>
+                </div>
             </form>
+            
         </div>
     )
 }

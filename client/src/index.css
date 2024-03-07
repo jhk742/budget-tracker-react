@@ -601,12 +601,18 @@ td {
 
 /*RECURRING BILLS*/
 
-.recurring-bills-form {
-    background: red;
+.RecurringBills {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 5rem;
+}
+
+.recurring-bills-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3rem;
+    width: 100%;
 }
 
 .recurring-bills-input {
@@ -620,4 +626,30 @@ td {
     display: flex;
     flex-direction: column;
     margin-bottom: 1rem;
+}
+
+.recurring-bills-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.recurring-bills-buttons button {
+    background: #000;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    width: 70%;
+    height: 3rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.recurring-bills-buttons button:hover{
+    background: #fff;
+    color: #000;
 }
