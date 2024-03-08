@@ -299,11 +299,94 @@ const getCategoryExpenses = async (req, res) => {
     }
 }
 
+const payRecurringBills = async (req, res) => {
+    const { userId } = req.params
+    try {
+        const response = await transactionModel.find({ userId, recurringBill: true })
+        if (response.length === 0) {
+            return res.status(200).json({ message: "No data found" })
+        }
+
+        /**
+         * go through the transactions and first 
+         * 
+         * (first check to see if the transaction we're dealing with was the 
+         * initial payment or NOT)
+         * 
+         * IF SO, create a new bill with the 'initialBill' field initialized 
+         * to the _id of its corresponding initial bill
+         * 
+         * IF NOT, invoke mostRecentRecurringBills method implemented below
+         * 
+         * create a list for each recurringBill (using the initialBill field)
+         * and retrieve the one with the most recent date (this is the bill that would need to be paid)
+         * 
+         * calculate the
+         * day when the next payment should be made...
+         * then, if the target payment date === today, make the payment
+         * and update user balance
+         * 
+         * make sure that no duplicate payments are made...
+         * 
+         * and maybe have all the recurring bills be chained together by 
+         * initial recurringBill object _id?
+         */
+
+        /**
+         * 1) Iterate through each transaction and for each, find the one with the most
+         * recent "startingDate" within its associated recurring bills
+         */
+        const mostRecentRecurringBills = (await Promise.all(response.map(async transaction => {
+            const mostRecentRecurringBill = await transactionModel.find({
+                'timeElapsedBeforeNextPayment.initialBill': transaction._id
+            }).sort({ 'timeElapsedBeforeNextPayment.startingDate': -1 }).limit(1)
+
+            return mostRecentRecurringBill
+        }))).filter(bill => bill.length > 0).flat()
+
+        const recurringBills = response.map((transaction) => {
+            const bills = {
+                userId,
+                type: "Expense",
+                category: transaction.category,
+                currency: transaction.currency,
+                amount: transaction.amount,
+                paymentMethod: "Card",
+                description: transaction.description,
+                location: transaction.location,
+                exchangedRate: transaction?.exchangedRate ?? null,
+                recurringBill: true,
+                timeElapsedBeforeNextPayment: {
+                    value: transaction.timeElapsedBeforeNextPayment.value,
+                    unit: transaction.timeElapsedBeforeNextPayment.unit,
+                    startingDate: new Date(),//today's date,
+                    intitialBill: transaction.timeElapsedBeforeNextPayment.initialBill ? transaction.timeElapsedBeforeNextPayment.initialBill : transaction._id
+                    //if initialBill field is not empty, use that, if not, this is the second payment
+                }
+            }
+        })
+
+        //make necessary payments and then updateUserBalance accordingly
+
+
+        // res.status(200).json({
+        //     transactions: response
+        // })
+        res.status(200).json({
+            transactions: mostRecentRecurringBills
+        })
+    } catch (error) {
+
+    }
+
+}
+
 module.exports = {
     addTransaction,
     convertRate,
     getTransactions,
     filterTransactions,
     getTotals,
-    getCategoryExpenses
+    getCategoryExpenses,
+    payRecurringBills
 }

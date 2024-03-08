@@ -20,7 +20,8 @@ const transactionSchema = new mongoose.Schema(
         timeElapsedBeforeNextPayment: {
             value: {type: String, required: false},
             unit: {type: String, required: false},
-            startingDate: {type: Date, required: false}
+            startingDate: {type: Date, required: false},
+            initialBill: {type: String, required: false}
         }
     },
     {

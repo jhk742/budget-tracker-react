@@ -24,7 +24,8 @@ export default function TransactionManagement() {
         timeElapsedBeforeNextPayment: {
             value: "",
             unit: "",
-            startingDate: ""
+            startingDate: "",
+            initialBill: ""
         }
     })
 

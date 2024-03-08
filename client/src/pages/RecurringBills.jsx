@@ -24,11 +24,12 @@ export default function RecurringBills() {
         timeElapsedBeforeNextPayment: {
             value: "", //integer value
             unit: "",//day, week, month, year,
-            startingDate: ""
+            startingDate: "",
+            initialBill: "" //this is the initialBill itself so this field will be an empty string
         }
     })
 
-    console.log(transactionData)
+    // console.log(user)
 
     useEffect(() => {
         const fetchCategories = async () => {
