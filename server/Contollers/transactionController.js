@@ -326,15 +326,31 @@ const payRecurringBills = async (req, res) => {
          * then, if the target payment date === today, make the payment
          * and update user balance
          * 
-         * make sure that no duplicate payments are made...
-         * 
-         * and maybe have all the recurring bills be chained together by 
-         * initial recurringBill object _id?
+         * make sure that no duplicate payments are made... (make sure the payment is
+         * made only ONCE)
          */
 
         /**
-         * 1) Iterate through each transaction and for each, find the one with the most
+         * 1) Get all INITIAL BILLS for which a new payment must be made
+         * => CREATION OF THE SECOND BILL
+         */
+        const initialBills = [];
+
+        for (const transaction of response) {
+            const hasAssociatedBills = await transactionModel.exists({
+                userId,
+                "timeElapsedBeforeNextPayment.initialBill": transaction._id
+            });
+        
+            // Check if the initialBill is not present or an empty string and has no associated bills
+            if ((!transaction.timeElapsedBeforeNextPayment.initialBill || transaction.timeElapsedBeforeNextPayment.initialBill === "") && !hasAssociatedBills) {
+                initialBills.push(transaction);
+            }
+        }
+        /**
+         * 2) Iterate through each transaction and for each, find the one with the most
          * recent "startingDate" within its associated recurring bills
+         * => ALL BILLS THAT ARE NOT THE INITIAL NOR SECOND BILL
          */
         const mostRecentRecurringBills = (await Promise.all(response.map(async transaction => {
             const mostRecentRecurringBill = await transactionModel.find({
@@ -343,6 +359,8 @@ const payRecurringBills = async (req, res) => {
 
             return mostRecentRecurringBill
         }))).filter(bill => bill.length > 0).flat()
+
+        //!!!SHOULD intialBill BE previousBillId instead? I think it SHOULD
 
         const recurringBills = response.map((transaction) => {
             const bills = {
@@ -373,7 +391,9 @@ const payRecurringBills = async (req, res) => {
         //     transactions: response
         // })
         res.status(200).json({
-            transactions: mostRecentRecurringBills
+            initialBills,
+            mostRecentBills: mostRecentRecurringBills,
+            allBills: response
         })
     } catch (error) {
 
