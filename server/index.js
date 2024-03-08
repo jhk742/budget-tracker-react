@@ -31,3 +31,6 @@ mongoose.connect(uri, {
     useUnifiedTopology: true
 }).then(() => console.log("MongoDB connection established."))
   .catch((error) => console.log("MongoDB connection failed ", error))
+
+
+console.log(new Date())

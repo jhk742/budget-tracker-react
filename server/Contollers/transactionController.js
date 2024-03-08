@@ -317,8 +317,7 @@ const payRecurringBills = async (req, res) => {
          * to the _id of its corresponding initial bill
          * 
          * IF NOT, invoke mostRecentRecurringBills method implemented below
-         * 
-         * create a list for each recurringBill (using the initialBill field)
+            create a list for each recurringBill (using the initialBill field)
          * and retrieve the one with the most recent date (this is the bill that would need to be paid)
          * 
          * calculate the
@@ -360,7 +359,53 @@ const payRecurringBills = async (req, res) => {
             return mostRecentRecurringBill
         }))).filter(bill => bill.length > 0).flat()
 
-        //!!!SHOULD intialBill BE previousBillId instead? I think it SHOULD
+        //previousBillId AND intialBill should both be fields
+
+        const allBills = [...initialBills, ...mostRecentRecurringBills]
+
+        const time = new Date(allBills[0].timeElapsedBeforeNextPayment.startingDate).toLocaleDateString('en-us')
+        const today = new Date().toLocaleDateString('en-us')
+
+        const billsToPay = allBills.map((transaction) => {
+            let days = 0
+            const { value, startingDate, unit } = transaction.timeElapsedBeforeNextPayment
+
+            switch (unit) {
+                case "Day":
+                    days = value
+                    break
+                
+                case "Week":
+                    days = 7 * value
+                    break
+
+                case "Month":
+                    days = 30 * value
+                    break
+                
+                case "Year":
+                    days = 365 * value
+            }
+
+            const targetDate = new Date(startingDate)
+            targetDate.setDate(targetDate.getDate() + days)
+
+            //if the targetDate === today, create a transaction and update user balance
+            if (new Date() === targetDate) {
+                
+            }
+
+            return {
+                id: transaction._id,
+                startingDate,
+                targetDate,
+                value,
+                unit
+            }
+        })
+
+        //before making the payment, make sure to check if the bill has already been paid...
+        //unless the logic provided above already does that for us...
 
         const recurringBills = response.map((transaction) => {
             const bills = {
@@ -393,7 +438,10 @@ const payRecurringBills = async (req, res) => {
         res.status(200).json({
             initialBills,
             mostRecentBills: mostRecentRecurringBills,
-            allBills: response
+            allBills,
+            time,
+            today,
+            billsToPay
         })
     } catch (error) {
 
