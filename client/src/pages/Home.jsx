@@ -1,10 +1,18 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { Link, Routes, Route } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import { baseUrl, getRequest } from '../utils/services'
 
 export default function Home() {
 
     const { user } = useContext(AuthContext)
+
+    useEffect(() => {
+        const recurringBillsCheck = async () => {
+            const totals = await getRequest(`${baseUrl}/transactions/payRecurringBills/${user._id}`)
+        }
+        recurringBillsCheck()
+    }, [])
     
     return (
         <div className="Home">

@@ -16,5 +16,5 @@ router.get("/getTransactions/:userId", getTransactions)
 router.get("/getFilteredTransactions/:userId/:transactionType?/:paymentMethod?/:category?/:startDate?/:endDate?", filterTransactions)
 router.get("/getTotals/:userId/:category?", getTotals)
 router.get("/getCategoryExpenses/:userId/:category", getCategoryExpenses)
-router.get("/getRecurringBills/:userId", payRecurringBills)
+router.get("/payRecurringBills/:userId", payRecurringBills)
 module.exports = router
