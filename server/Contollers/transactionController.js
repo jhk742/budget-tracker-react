@@ -308,28 +308,6 @@ const payRecurringBills = async (req, res) => {
         }
 
         /**
-         * go through the transactions and first 
-         * 
-         * (first check to see if the transaction we're dealing with was the 
-         * initial payment or NOT)
-         * 
-         * IF SO, create a new bill with the 'initialBill' field initialized 
-         * to the _id of its corresponding initial bill
-         * 
-         * IF NOT, invoke mostRecentRecurringBills method implemented below
-            create a list for each recurringBill (using the initialBill field)
-         * and retrieve the one with the most recent date (this is the bill that would need to be paid)
-         * 
-         * calculate the
-         * day when the next payment should be made...
-         * then, if the target payment date === today, make the payment
-         * and update user balance
-         * 
-         * make sure that no duplicate payments are made... (make sure the payment is
-         * made only ONCE)
-         */
-
-        /**
          * 1) Get all INITIAL BILLS for which a new payment must be made
          * => CREATION OF THE SECOND BILL
          */
@@ -361,18 +339,24 @@ const payRecurringBills = async (req, res) => {
 
         //previousBillId AND intialBill should both be fields
 
+        //concatenate the two arrays into one array
         const allBills = [...initialBills, ...mostRecentRecurringBills]
 
-        const time = new Date(allBills[0].timeElapsedBeforeNextPayment.startingDate).toLocaleDateString('en-us')
+        //used to check if today is the bills' timeElapsedBeforeNextPayment.staringDate
         const today = new Date().toLocaleDateString('en-us')
 
+        /**
+         * Iterate through each bill/transaction and read the value of
+         * unit, value, and startingDate. Using these pieces of information,
+         * calculate the next day in which the bill must be paid.
+         */
         const billsToPay = allBills.map((transaction) => {
             let days = 0
             const { value, startingDate, unit } = transaction.timeElapsedBeforeNextPayment
 
             switch (unit) {
                 case "Day":
-                    days = value
+                    days = Number(value)
                     break
                 
                 case "Week":
@@ -387,12 +371,47 @@ const payRecurringBills = async (req, res) => {
                     days = 365 * value
             }
 
-            const targetDate = new Date(startingDate)
+            
+            let targetDate = new Date(startingDate)
             targetDate.setDate(targetDate.getDate() + days)
+            targetDate = targetDate.toLocaleDateString('en-us')
 
             //if the targetDate === today, create a transaction and update user balance
-            if (new Date() === targetDate) {
-                
+            if (today === targetDate) {
+                /**
+                 * make payment based off userPreferredCurrency / alternative currency 
+                 * provided
+                 */
+                let newTransactionData = new transactionModel({
+                    userId: transaction.userId,
+                    type: "Expense",
+                    category: transaction.category,
+                    currency: transaction.currency,
+                    amount: transaction.amount,
+                    paymentMethod: "Card",
+                    description: transaction.description,
+                    location: transaction.location,
+                    exchangedRate: transaction?.exchangedRate ?? null,
+                    recurringBill: true,
+                    timeElapsedBeforeNextPayment: {
+                        value: transaction.timeElapsedBeforeNextPayment.value,
+                        unit: transaction.timeElapsedBeforeNextPayment.unit,
+                        startingDate: new Date(), //today's date
+                        initialBill: transaction.timeElapsedBeforeNextPayment.initialBill 
+                            ? transaction.timeElapsedBeforeNextPayment.initialBill
+                            : transaction._id
+                        /*
+                        if initialBill field is not empty, use that, if not, 
+                        this is the second payment for the bill
+                        */
+                    }
+                })
+
+                return newTransactionData
+                //before making the payment, make sure to check if the bill has already been paid...
+                //unless the logic provided above already does that for us...
+    
+                //make necessary payments and then updateUserBalance accordingly
             }
 
             return {
@@ -400,37 +419,10 @@ const payRecurringBills = async (req, res) => {
                 startingDate,
                 targetDate,
                 value,
-                unit
+                unit,
+                days
             }
         })
-
-        //before making the payment, make sure to check if the bill has already been paid...
-        //unless the logic provided above already does that for us...
-
-        const recurringBills = response.map((transaction) => {
-            const bills = {
-                userId,
-                type: "Expense",
-                category: transaction.category,
-                currency: transaction.currency,
-                amount: transaction.amount,
-                paymentMethod: "Card",
-                description: transaction.description,
-                location: transaction.location,
-                exchangedRate: transaction?.exchangedRate ?? null,
-                recurringBill: true,
-                timeElapsedBeforeNextPayment: {
-                    value: transaction.timeElapsedBeforeNextPayment.value,
-                    unit: transaction.timeElapsedBeforeNextPayment.unit,
-                    startingDate: new Date(),//today's date,
-                    intitialBill: transaction.timeElapsedBeforeNextPayment.initialBill ? transaction.timeElapsedBeforeNextPayment.initialBill : transaction._id
-                    //if initialBill field is not empty, use that, if not, this is the second payment
-                }
-            }
-        })
-
-        //make necessary payments and then updateUserBalance accordingly
-
 
         // res.status(200).json({
         //     transactions: response
@@ -439,7 +431,6 @@ const payRecurringBills = async (req, res) => {
             initialBills,
             mostRecentBills: mostRecentRecurringBills,
             allBills,
-            time,
             today,
             billsToPay
         })

@@ -118,11 +118,11 @@ export default function RecurringBills() {
                 return setTransactionError({ message: "The amount you've entered exceeds your current balance" })
             }
 
-            if (compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate), "lessThan")) {
-                return setTransactionError({ message: `The starting date of a recurring bill must either be the current date, ${new Date().toLocaleDateString(undefined, {
-                    day: 'numeric', month: 'numeric', year: 'numeric'
-                })}, or greater` })
-            }
+            // if (compareDate(new Date(transactionData.timeElapsedBeforeNextPayment.startingDate), "lessThan")) {
+            //     return setTransactionError({ message: `The starting date of a recurring bill must either be the current date, ${new Date().toLocaleDateString(undefined, {
+            //         day: 'numeric', month: 'numeric', year: 'numeric'
+            //     })}, or greater` })
+            // }
 
             setTransactionData((prev) => ({
                 ...prev,
