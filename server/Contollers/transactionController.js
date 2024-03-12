@@ -1,6 +1,7 @@
 const axios = require("axios")
 const transactionModel = require("../Models/transactionModel")
 const dotenv = require("dotenv")
+const userModel = require("../Models/userModel")
 dotenv.config()
 
 const addTransaction = async (req, res) => {
@@ -347,8 +348,8 @@ const payRecurringBills = async (req, res) => {
 
         /**
          * Iterate through each bill/transaction and read the value of
-         * unit, value, and startingDate. Using these pieces of information,
-         * calculate the next day in which the bill must be paid.
+         * unit, value, and startingDate. If the startingDate + value calculated 
+         * from the given "value" and "unit" is equivalent to today's date, create a transaction
          */
         const billsToPay = allBills.map((transaction) => {
             let days = 0
@@ -382,7 +383,7 @@ const payRecurringBills = async (req, res) => {
                  * make payment based off userPreferredCurrency / alternative currency 
                  * provided
                  */
-                let newTransactionData = new transactionModel({
+                let newTransactionData = {
                     userId: transaction.userId,
                     type: "Expense",
                     category: transaction.category,
@@ -392,6 +393,7 @@ const payRecurringBills = async (req, res) => {
                     description: transaction.description,
                     location: transaction.location,
                     exchangedRate: transaction?.exchangedRate ?? null,
+                    userPreferredCurrency: transaction.userPreferredCurrency,
                     recurringBill: true,
                     timeElapsedBeforeNextPayment: {
                         value: transaction.timeElapsedBeforeNextPayment.value,
@@ -405,28 +407,30 @@ const payRecurringBills = async (req, res) => {
                         this is the second payment for the bill
                         */
                     }
-                })
+                }
 
                 return newTransactionData
-                //before making the payment, make sure to check if the bill has already been paid...
-                //unless the logic provided above already does that for us...
-    
-                //make necessary payments and then updateUserBalance accordingly
+                
             }
+        }).filter(bill => bill)
 
-            return {
-                id: transaction._id,
-                startingDate,
-                targetDate,
-                value,
-                unit,
-                days
+        //iterate through the billsToPay array to create transactions and make deductions
+        //before making the payment, make sure to check if the bill has already been paid...
+        //unless the logic provided above already does that for us...
+
+        //make necessary payments and then updateUserBalance accordingly
+        for (const bill of billsToPay) {
+            try {
+                let newTransaction = new transactionModel(bill)
+                await newTransaction.save()
+                const user = await userModel.findById(bill.userId)
+                user.balance -= bill.exchangedRate ? bill.exchangedRate : bill.amount
+                await user.save()
+            } catch (error) {
+                res.status(500).json(error)
             }
-        })
+        }
 
-        // res.status(200).json({
-        //     transactions: response
-        // })
         res.status(200).json({
             initialBills,
             mostRecentBills: mostRecentRecurringBills,
@@ -435,7 +439,7 @@ const payRecurringBills = async (req, res) => {
             billsToPay
         })
     } catch (error) {
-
+        res.status(500).json(error)
     }
 
 }

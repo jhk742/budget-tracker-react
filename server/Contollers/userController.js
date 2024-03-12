@@ -46,9 +46,7 @@ const updateUserBalance = async (req, res) => {
     const { userId } = req.params
     const updatedUserData = req.body
     try {
-
-        // const user = await userModel.findByIdAndUpdate(userId, updatedUserData, { new: true })
-        const user = await userModel.findByIdAndUpdate(userId, { balance: updatedUserData.balance }, { new: true });
+        const user = await userModel.findByIdAndUpdate(userId, { balance: updatedUserData.balance }, { new: true })
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' })
