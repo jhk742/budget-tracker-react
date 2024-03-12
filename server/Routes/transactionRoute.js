@@ -5,7 +5,8 @@ const { addTransaction,
     filterTransactions, 
     getTotals, 
     getCategoryExpenses,
-    payRecurringBills
+    payRecurringBills,
+    getRecurringBills
 } = require("../Contollers/transactionController")
 
 const router = express.Router()
@@ -17,4 +18,5 @@ router.get("/getFilteredTransactions/:userId/:transactionType?/:paymentMethod?/:
 router.get("/getTotals/:userId/:category?", getTotals)
 router.get("/getCategoryExpenses/:userId/:category", getCategoryExpenses)
 router.get("/payRecurringBills/:userId", payRecurringBills)
+router.get("/getRecurringBills/:userId", getRecurringBills)
 module.exports = router

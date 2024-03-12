@@ -24,7 +24,7 @@ REGISTER USER
 .register-box, .login-box {
     background-color: #808080;
     width: 60%;
-    height: 40%;
+    height: 50%;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -147,7 +147,7 @@ HOME
 
 .Home span {
     position: relative;
-    top: -30%;
+    top: -25%;
     font-size: 2rem;
 }
 
@@ -686,3 +686,9 @@ td {
     cursor: pointer;
 }
 
+/*RECURRING BILLS VIEW/MODIFY*/
+.recurring-bills-initial-bills {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+}

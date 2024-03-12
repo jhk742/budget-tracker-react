@@ -439,9 +439,32 @@ const payRecurringBills = async (req, res) => {
             billsToPay
         })
     } catch (error) {
+        console.error("Error fetching transactions:", error)
         res.status(500).json(error)
     }
+}
 
+const getRecurringBills = async (req, res) => {
+    const { userId } = req.params
+    let query = { userId }
+
+    try {
+        const response = await transactionModel.find(query)
+
+        const initialBills = response.map((transaction) => {
+            if (transaction.timeElapsedBeforeNextPayment.initialBill === "")
+                return transaction
+        }).filter(bill => bill)
+
+        const associatedBills = initialBills.map((transaction) => {
+            return response.filter(tx => tx.timeElapsedBeforeNextPayment.initialBill === transaction._id)
+        })
+
+        res.status(200).json({initialBills, associatedBills})
+    } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).json(error)
+    }
 }
 
 module.exports = {
@@ -451,5 +474,6 @@ module.exports = {
     filterTransactions,
     getTotals,
     getCategoryExpenses,
-    payRecurringBills
+    payRecurringBills,
+    getRecurringBills
 }

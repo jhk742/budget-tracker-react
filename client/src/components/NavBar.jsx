@@ -21,7 +21,8 @@ export default function NavBar() {
                             location.pathname === "/account-balance" ||
                             location.pathname === "/totals" ||
                             location.pathname === "/receipt-upload" ||
-                            location.pathname === "/recurring-bills"
+                            location.pathname === "/recurring-bills" ||
+                            location.pathname === "/view-modify-recurring-bills"
                         ) &&
                         <Link 
                             to="/"
