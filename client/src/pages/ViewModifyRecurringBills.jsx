@@ -7,9 +7,12 @@ export default function ViewModifyRecurringBills() {
     const { user } = useContext(AuthContext)
     const [bills, setBills] = useState([])
 
-    const initialBills = bills.map((transaction) => {
+    const initialBills = bills.map((transaction, index) => {
         return (
-            <div className="recurring-bills-initial-bills">
+            <div 
+                className="recurring-bills-initial-bills"
+                key={index}
+            >
                 <span>{transaction.description}</span>
                 <span>{new Date(transaction.timeElapsedBeforeNextPayment.startingDate).toLocaleDateString('en-us')}</span>
                 <span>{`Paid currency: ${transaction.currency}`}</span>

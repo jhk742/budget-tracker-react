@@ -446,21 +446,17 @@ const payRecurringBills = async (req, res) => {
 
 const getRecurringBills = async (req, res) => {
     const { userId } = req.params
-    let query = { userId }
-
     try {
-        const response = await transactionModel.find(query)
+        const response = await transactionModel.find({ userId })
 
-        const initialBills = response.map((transaction) => {
-            if (transaction.timeElapsedBeforeNextPayment.initialBill === "")
-                return transaction
-        }).filter(bill => bill)
+        const initialBills = response.filter(transaction => transaction.timeElapsedBeforeNextPayment.initialBill === "")
 
+        //for some reason, the code below is not returning the proper results
         const associatedBills = initialBills.map((transaction) => {
-            return response.filter(tx => tx.timeElapsedBeforeNextPayment.initialBill === transaction._id)
+            return response.filter(tx => tx.timeElapsedBeforeNextPayment.initialBill === String(transaction._id))
         })
-
-        res.status(200).json({initialBills, associatedBills})
+        
+        res.status(200).json({ response, initialBills, associatedBills })
     } catch (error) {
         console.error("Error fetching data:", error)
         res.status(500).json(error)
