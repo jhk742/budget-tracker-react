@@ -710,3 +710,7 @@ td {
     background: #fff;
     color: #000;
 }
+
+.recurring-bills-table-specific {
+    margin-bottom: 2rem;
+}
