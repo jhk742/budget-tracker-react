@@ -456,7 +456,7 @@ const getRecurringBills = async (req, res) => {
             return response.filter(tx => tx.timeElapsedBeforeNextPayment.initialBill === String(transaction._id))
         })
         
-        res.status(200).json({ response, initialBills, associatedBills })
+        res.status(200).json({ initialBills, associatedBills })
     } catch (error) {
         console.error("Error fetching data:", error)
         res.status(500).json(error)

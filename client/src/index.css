@@ -687,8 +687,16 @@ td {
 }
 
 /*RECURRING BILLS VIEW/MODIFY*/
-.recurring-bills-initial-bills {
+.recurring-bills-view-modify {
     display: flex;
-    flex-direction: column;
-    margin-top: 1rem;
+    justify-content: center;
+}
+
+.recurring-bills-table {
+    margin-top: 5rem;
+    width: 90%;
+}
+
+.recurring-bills-table tbody tr td {
+    text-align: center;
 }
