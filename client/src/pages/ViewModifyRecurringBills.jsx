@@ -9,6 +9,10 @@ export default function ViewModifyRecurringBills() {
         initialBills: [],
         associatedBills: []
     })
+    const [viewBill, setViewBill] = useState({
+        view: false,
+        index: null
+    })
 
     const initialBills = bills.initialBills.map((transaction, index) => {
         const { description, currency, exchangedRate, amount, userPreferredCurrency } = transaction
@@ -16,17 +20,39 @@ export default function ViewModifyRecurringBills() {
         return (
             <tr 
                 key={index}
+                className="recurring-bills-table-row"
+                onClick={() => setViewBill({
+                    view: true,
+                    index
+                })}
             >
                 <td>{description}</td>
                 <td>{new Date(startingDate).toLocaleDateString('en-us')}</td>
                 <td>{`${value} ${unit}(s)`}</td>
                 <td>{currency}</td>
                 <td>{amount}</td>
-                <td>{exchangedRate ? exchangedRate : amount} ({user.preferredCurrency.substring(0, 3)})</td>
+                <td>{exchangedRate ? exchangedRate : amount} ({userPreferredCurrency.substring(0, 3)})</td>
                 <td>{bills.associatedBills[index].length}</td>
             </tr>
         )
     })
+
+    const specificBill = viewBill.index !== null && bills.associatedBills[viewBill.index] !== undefined
+    ? bills.associatedBills[viewBill.index].map((transaction, index) => {
+        const { description, currency, exchangedRate, amount, userPreferredCurrency } = transaction
+        const { value, unit, startingDate } = transaction.timeElapsedBeforeNextPayment
+        return (
+            <div key={index}>
+                <span>{description}</span>
+                <span>{startingDate}</span>
+                <span>{`${value} ${unit}(s)`}</span>
+                <span>{currency}</span>
+                <span>{amount}</span>
+                <span>{exchangedRate ? exchangedRate : amount} ({userPreferredCurrency.substring(0, 3)})</span>
+            </div>
+        )
+    })
+    : null
 
     useEffect(() => {
         const fetchRecurringBills = async () => {
@@ -43,24 +69,39 @@ export default function ViewModifyRecurringBills() {
 
     return (
         <div className="recurring-bills-view-modify">
-            <table
-                className="recurring-bills-table"
-            >
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>First Payment</th>
-                        <th>Interval Between Payments</th>
-                        <th>Currency Used for Payment</th>
-                        <th>Amount Paid in Base Currency</th>
-                        <th>Amount Paid in Preferred Currency</th>
-                        <th>Additional Payments Made Towards this Bill</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {initialBills}
-                </tbody>
-            </table>
+            {viewBill.view === false 
+            ? (
+                <table
+                    className="recurring-bills-table"
+                >
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>First Payment</th>
+                            <th>Interval Between Payments</th>
+                            <th>Currency Used for Payment</th>
+                            <th>Amount Paid in Base Currency</th>
+                            <th>Amount Paid in Preferred Currency</th>
+                            <th>Additional Payments Made Towards this Bill</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {initialBills}
+                    </tbody>
+                </table>
+            )
+            : (
+                <div>
+                    <button
+                        onClick={() => setViewBill({
+                            view: false,
+                            index: null
+                        })}
+                    >BACK</button>
+                    {specificBill}
+                </div>
+            )
+            }
         </div>
     )
 }
